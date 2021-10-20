@@ -139,7 +139,9 @@ declare namespace JSX {
         font:ICommonElement<HTMLFontElement>;
 
         svg:any;
+        g:any;
         rect:any;
+        circle:any;
         path:any;
 
     }

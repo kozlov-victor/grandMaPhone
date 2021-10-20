@@ -7,8 +7,44 @@
         * {
             font-size: 14px;
             font-family: serif;
+            box-sizing: border-box;
+            user-select: none;
         }
         .time {
+            font-size: 25px;
+            font-family: monospace;
+            align-self: center;
+        }
+        html,body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-image: linear-gradient(0deg, #b1a9ff 0%, #f1eeee 100%);
+        }
+        .verticalLayout {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .horizontalLayout {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+        .alignItemsCenter {
+            align-items: center;
+        }
+        .flex1 {
+            flex: 1;
+        }
+        .badge {
+            position: absolute;
+            background-color: red;
+            color: white;
+            padding: 5px;
+            border-radius: 20px;
             font-size: 25px;
             font-family: monospace;
         }

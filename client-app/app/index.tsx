@@ -5,17 +5,11 @@ import {HTMLElementWrap} from "@engine/renderable/tsx/dom/HTMLElementWrap";
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
 import {ReactiveMethod} from "@engine/renderable/tsx/genetic/reactiveMethod";
 import {Battery} from "./components/battery";
+import {Phone, PhoneStorage} from "./components/phone";
+import {PhoneBook} from "./components/phoneBook";
+import {Sms, SmsStorage} from "./components/sms";
+import {Clock, ClockStorage} from "./components/clock";
 
-const leadZero = (n: number): string => {
-    if (n <= 9) return `0${n}`;
-    else return `${n}`;
-}
-
-const formatTime = (date: Date): string => {
-    const hh = leadZero(date.getHours());
-    const mm = leadZero(date.getMinutes());
-    return `${hh}:${mm}`;
-}
 
 export class App extends VEngineTsxComponent {
 
@@ -24,25 +18,39 @@ export class App extends VEngineTsxComponent {
     constructor() {
         super(new HtmlTsxDOMRenderer());
 
-        this.nextTick();
         setInterval(() => {
-            this.nextTick();
+            this.nextTimeTick();
         }, 1000 * 30);
     }
 
     @ReactiveMethod()
-    private nextTick(): void {
-        this.time = formatTime(new Date());
+    private nextTimeTick(): void {
+        ClockStorage.nextTick();
     }
 
     public render(): VirtualNode {
         return (
             <>
-                <div className='time'>
-                    {this.time}
-                </div>
-                <div>
-                    <Battery/>
+                <div className='verticalLayout alignItemsCenter' onclick={e=>{
+                    SmsStorage.unreadSmsNumber+=1;
+                    this.triggerRendering();
+                }}>
+                    <div className='horizontalLayout' style={{padding: '10px'}}>
+                        <Clock/>
+                        <div className='flex1'/>
+                        <div>
+                            <Battery/>
+                        </div>
+                    </div>
+                    <div className="flex1">
+                        <Phone/>
+                    </div>
+                    <div className="flex1">
+                        <PhoneBook/>
+                    </div>
+                    <div className="flex1">
+                        <Sms/>
+                    </div>
                 </div>
             </>
         );
