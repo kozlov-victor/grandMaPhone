@@ -3,6 +3,7 @@ package com.victor;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
@@ -16,9 +17,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.victor.service.kiosk.KioskService;
+import com.victor.service.listener.BatteryLevelListener;
+import com.victor.service.listener.BatteryStatusListener;
 import com.victor.service.listener.PhoneCallListener;
 import com.victor.service.listener.SMSReceivedListener;
-import com.victor.service.provider.BatteryStateProvider;
 import com.victor.service.provider.PermissionsProvider;
 
 public class MainActivity extends Activity {
@@ -41,7 +43,7 @@ public class MainActivity extends Activity {
         // listen to calls
         callListener = PhoneCallListener.getInstance(this);
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        telephonyManager.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
+        if (telephonyManager!=null) telephonyManager.listen(callListener, PhoneStateListener.LISTEN_CALL_STATE);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.provider.Telephony.SMS_RECEIVED");
@@ -53,6 +55,31 @@ public class MainActivity extends Activity {
                 System.out.println(message);
             }
         });
+
+        // listen to battery level
+        BatteryLevelListener batteryLevelListener = new BatteryLevelListener();
+        batteryLevelListener.setListener(new BatteryLevelListener.BatteryLevelChangedCallBack() {
+            @Override
+            public void onMessage(int level) {
+                System.out.println(level);
+            }
+        });
+        registerReceiver(batteryLevelListener, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+
+        // listen to battery status
+        BatteryStatusListener batteryStatusListener = new BatteryStatusListener();
+        batteryStatusListener.setListener(new BatteryStatusListener.BatteryStatusChangedCallBack() {
+            @Override
+            public void onMessage(boolean charged) {
+                System.out.println(charged);
+            }
+        });
+        IntentFilter btrIntentFilter = new IntentFilter();
+        btrIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        btrIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        registerReceiver(batteryStatusListener, btrIntentFilter);
+
+        //
 
         setContentView(R.layout.activity_main);
 
@@ -72,8 +99,6 @@ public class MainActivity extends Activity {
         webView.getSettings().setAppCacheEnabled(true);
 
         webView.loadUrl("file:///android_asset/index.html");
-
-        System.out.println("---------------------------"+new BatteryStateProvider().getBatteryPercentage(this));
 
     }
 
