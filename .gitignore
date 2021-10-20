@@ -1,0 +1,5 @@
+*.iml
+/.idea/c*
+.DS_Store
+/build
+/node_modules
