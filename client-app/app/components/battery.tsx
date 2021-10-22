@@ -1,9 +1,15 @@
 import {VirtualNode} from "@engine/renderable/tsx/genetic/virtualNode";
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
+import {NativeBridgeListener} from "../nativeBridgeListener";
 
 export const BatteryStorage = {
     chargeValue: 100,
+    onChanged: ()=>{},
 }
+
+setTimeout(()=>{
+    (window as any).__host__.onReceived('BatteryLevelListener.getValueForNow');
+},1000);
 
 const getColorByCharge = ():string=>{
     const val = BatteryStorage.chargeValue;
@@ -13,6 +19,13 @@ const getColorByCharge = ():string=>{
     else return '#ff0000';
 
 }
+
+NativeBridgeListener.subscribeToEvent('onBatteryValueChanged',({value}:{value:number})=>{
+    BatteryStorage.chargeValue = value;
+    BatteryStorage.onChanged();
+},false);
+
+
 
 export const Battery = ():VirtualNode=>{
     const fillColor = getColorByCharge();

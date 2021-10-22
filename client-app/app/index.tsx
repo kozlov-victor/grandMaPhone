@@ -4,19 +4,26 @@ import {HtmlTsxDOMRenderer} from "@engine/renderable/tsx/dom/htmlTsxDOMRenderer"
 import {HTMLElementWrap} from "@engine/renderable/tsx/dom/HTMLElementWrap";
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
 import {ReactiveMethod} from "@engine/renderable/tsx/genetic/reactiveMethod";
-import {Battery} from "./components/battery";
-import {Phone, PhoneStorage} from "./components/phone";
+import {Battery, BatteryStorage} from "./components/battery";
+import {Phone} from "./components/phone";
 import {PhoneBook} from "./components/phoneBook";
 import {Sms, SmsStorage} from "./components/sms";
 import {Clock, ClockStorage} from "./components/clock";
+import {NativeBridgeListener} from "./nativeBridgeListener";
+
+
+(window as any).__cb__ = (event:{eventId:string,payload:any})=>{
+    NativeBridgeListener.onEventReceivedFromHost(event);
+}
 
 
 export class App extends VEngineTsxComponent {
 
-    private time: string;
-
     constructor() {
         super(new HtmlTsxDOMRenderer());
+        BatteryStorage.onChanged = ()=>{
+            this.triggerRendering();
+        }
 
         setInterval(() => {
             this.nextTimeTick();
