@@ -13,6 +13,17 @@ public class PhoneCallListener extends PhoneStateListener {
 
     private static PhoneCallListener instance;
 
+
+    private OnCallMissedCallBack listener;
+
+    public void setListener(OnCallMissedCallBack onCallMissedCallBack) {
+        listener = onCallMissedCallBack;
+    }
+
+    public interface OnCallMissedCallBack {
+        void onCallMissed();
+    }
+
     public static PhoneCallListener getInstance(Activity activity){
         if (instance==null) instance = new PhoneCallListener();
         return instance;
@@ -42,7 +53,8 @@ public class PhoneCallListener extends PhoneStateListener {
 
         if (TelephonyManager.CALL_STATE_IDLE == state) {
             if (prevState==TelephonyManager.CALL_STATE_RINGING) {
-                System.out.println("missed " + incomingNumber);
+                //"missed " + incomingNumber)
+                if (listener!=null) listener.onCallMissed();
             }
             isPhoneCalling = false;
         }

@@ -20,7 +20,7 @@ public class JsNativeBridge {
     public static void sendToWebClient(WebView webView, String eventId, Map<String,Object> payload) {
         Map<String,Object> toSerialize = new HashMap<>();
         toSerialize.put("eventId",eventId);
-        toSerialize.put("payload",payload);
+        if (payload!=null) toSerialize.put("payload",payload);
         JSONObject jsonObject = new JSONObject(toSerialize);
         webView.evaluateJavascript(String.format("window.__cb__ && window.__cb__(%s)", jsonObject.toString()), new ValueCallback<String>() {
             @Override

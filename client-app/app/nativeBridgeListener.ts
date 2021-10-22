@@ -9,6 +9,7 @@ export namespace NativeBridgeListener {
 
 
     export const onEventReceivedFromHost = ({eventId,payload} : {eventId:string,payload:any}):void=> {
+        console.log(eventId,JSON.stringify(payload));
         if (callBacks[eventId]) {
             callBacks[eventId].cb(payload);
             if (callBacks[eventId].once) delete callBacks[eventId];

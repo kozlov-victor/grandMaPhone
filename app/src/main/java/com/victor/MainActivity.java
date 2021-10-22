@@ -45,6 +45,12 @@ public class MainActivity extends Activity {
         // listen to calls
         PhoneCallListener callListener = PhoneCallListener.getInstance(this);
         callListener.register(this);
+        callListener.setListener(new PhoneCallListener.OnCallMissedCallBack() {
+            @Override
+            public void onCallMissed() {
+                JsNativeBridge.sendToWebClient(webView,"onCallMissed",null);
+            }
+        });
 
         SMSReceivedListener smsReceivedListener = new SMSReceivedListener();
         smsReceivedListener.register(this);
@@ -68,12 +74,14 @@ public class MainActivity extends Activity {
         });
 
         // listen to battery status
-        BatteryStatusListener batteryStatusListener = new BatteryStatusListener();
+        final BatteryStatusListener batteryStatusListener = new BatteryStatusListener();
         batteryStatusListener.register(this);
         batteryStatusListener.setListener(new BatteryStatusListener.BatteryStatusChangedCallBack() {
             @Override
-            public void onMessage(boolean charged) {
-                System.out.println(charged);
+            public void onMessage(boolean isCharging) {
+                Map<String,Object> map = new HashMap<>();
+                map.put("isCharging",isCharging);
+                JsNativeBridge.sendToWebClient(webView,"onBatteryStatusChanged",map);
             }
         });
 
@@ -105,6 +113,16 @@ public class MainActivity extends Activity {
                             }
                         });
                         break;
+                    case "onBatteryStatusChanged":
+                        final boolean isCharging = batteryStatusListener.getValueForNow(MainActivity.this);
+                        MainActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Map<String,Object> map = new HashMap<>();
+                                map.put("isCharging",isCharging);
+                                JsNativeBridge.sendToWebClient(webView,"onBatteryStatusChanged",map);
+                            }
+                        });
                 }
             }
         },"__host__");

@@ -23,7 +23,7 @@ public class BatteryStatusListener extends BroadcastReceiver {
     }
 
     public interface BatteryStatusChangedCallBack {
-         void onMessage(boolean charged);
+         void onMessage(boolean isCharging);
     }
 
     public boolean getValueForNow(Activity activity) {
