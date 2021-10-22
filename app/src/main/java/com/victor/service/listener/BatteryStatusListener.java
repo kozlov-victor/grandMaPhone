@@ -36,4 +36,11 @@ public class BatteryStatusListener extends BroadcastReceiver {
                 status == BatteryManager.BATTERY_STATUS_FULL;
     }
 
+    public void register(Activity activity) {
+        IntentFilter btrIntentFilter = new IntentFilter();
+        btrIntentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED);
+        btrIntentFilter.addAction(Intent.ACTION_POWER_CONNECTED);
+        activity.registerReceiver(this, btrIntentFilter);
+    }
+
 }

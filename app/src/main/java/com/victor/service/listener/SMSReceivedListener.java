@@ -1,8 +1,10 @@
 package com.victor.service.listener;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 
@@ -43,6 +45,12 @@ public class SMSReceivedListener extends BroadcastReceiver {
 
     public void removeSMSListener(SMSReceivedListner listner){
         smsListner.remove(listner);
+    }
+
+    public void register(Activity activity) {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        activity.registerReceiver(this,filter);
     }
 
     public interface SMSReceivedListner{

@@ -1,6 +1,7 @@
 package com.victor.service.listener;
 
 import android.app.Activity;
+import android.content.Context;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
@@ -19,6 +20,11 @@ public class PhoneCallListener extends PhoneStateListener {
 
     private PhoneCallListener() {
 
+    }
+
+    public void register(Activity activity) {
+        TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager!=null) telephonyManager.listen(this, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     @Override

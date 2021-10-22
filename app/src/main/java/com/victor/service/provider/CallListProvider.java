@@ -9,32 +9,13 @@ import android.provider.CallLog;
 
 import androidx.core.app.ActivityCompat;
 
+import com.victor.model.CallInfo;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class CallListProvider {
-
-    public static class CallInfo {
-        private String address;
-        private Date callDate;
-
-        public Date getCallDate() {
-            return callDate;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        @Override
-        public String toString() {
-            return "CallInfo{" +
-                    "address='" + address + '\'' +
-                    ", callDate=" + callDate +
-                    '}';
-        }
-    }
 
     public List<CallInfo> getCallDetails(Activity activity) {
 
@@ -71,8 +52,8 @@ public class CallListProvider {
             // String callDuration = managedCursor.getString(duration);
 
             CallInfo callInfo = new CallInfo();
-            callInfo.address = address;
-            callInfo.callDate = callDayTime;
+            callInfo.setAddress(address);
+            callInfo.setCallDate(callDayTime);
             result.add(callInfo);
 
         }
