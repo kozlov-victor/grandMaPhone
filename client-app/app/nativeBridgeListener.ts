@@ -17,4 +17,8 @@ export namespace NativeBridgeListener {
         }
     }
 
+    export const requestEvent = (eventId:string):void=> {
+        (window as any).__host__.requestEvent(eventId);
+    }
+
 }

@@ -77,7 +77,6 @@ public class MainActivity extends Activity {
             }
         });
 
-
         WebChromeClient chromeClient = new MyChromeClient();
         webView.setWebChromeClient(chromeClient);
         webView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 5.1; rv:9.0.1) Gecko/20100101 Firefox/9.0.1");
@@ -93,10 +92,9 @@ public class MainActivity extends Activity {
         // add bridge
         webView.addJavascriptInterface(new JsNativeBridge.OnMessageReceivedFromClient(){
             @JavascriptInterface
-            public void onReceived(String eventId) {
-                System.out.println("onreceiced"+ eventId);
+            public void requestEvent(String eventId) {
                 switch (eventId) {
-                    case "BatteryLevelListener.getValueForNow":
+                    case "onBatteryValueChanged":
                         final int value = batteryLevelListener.getValueForNow(MainActivity.this);
                         MainActivity.this.runOnUiThread(new Runnable() {
                             @Override

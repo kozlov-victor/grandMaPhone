@@ -8,7 +8,7 @@ export const BatteryStorage = {
 }
 
 setTimeout(()=>{
-    (window as any).__host__.onReceived('BatteryLevelListener.getValueForNow');
+    NativeBridgeListener.requestEvent('onBatteryValueChanged');
 },1000);
 
 const getColorByCharge = ():string=>{

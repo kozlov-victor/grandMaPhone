@@ -14,7 +14,7 @@ public class JsNativeBridge {
 
 
     public static abstract class OnMessageReceivedFromClient {
-         public abstract void onReceived(String eventId);
+         public abstract void requestEvent(String eventId);
     }
 
     public static void sendToWebClient(WebView webView, String eventId, Map<String,Object> payload) {
