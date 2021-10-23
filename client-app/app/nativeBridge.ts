@@ -15,7 +15,7 @@ export namespace NativeBridge {
             callBacks[eventId].cb(payload);
             if (callBacks[eventId].once) delete callBacks[eventId];
         } else {
-            console.log(`unknown host event: ${{eventId,payload}}`);
+            console.log(`unknown host event`);
         }
     }
 

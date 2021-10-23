@@ -19,7 +19,7 @@ import {Router} from "./router/router";
 
 NativeBridge.subscribeToEvent('onResume',()=>{
     Router.navigateTo('home');
-});
+},false);
 
 
 export class App extends VEngineTsxComponent {
