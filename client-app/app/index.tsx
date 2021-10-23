@@ -7,15 +7,19 @@ import {ReactiveMethod} from "@engine/renderable/tsx/genetic/reactiveMethod";
 import {Battery, BatteryStorage} from "./components/battery";
 import {PhoneStorage} from "./components/phone";
 import {Clock, ClockStorage} from "./components/clock";
-import {NativeBridgeListener} from "./nativeBridgeListener";
+import {NativeBridge} from "./nativeBridge";
 import {Home} from "./pages/home";
-import {MissedCalls} from "./pages/missedCalls";
+import {MissedCalls, MissedCallsStore} from "./pages/missedCalls";
 import {Router} from "./router/router";
 
 
 (window as any).__cb__ = (event:{eventId:string,payload:any})=>{
-    NativeBridgeListener.onEventReceivedFromHost(event);
+    NativeBridge.onEventReceivedFromHost(event);
 }
+
+NativeBridge.subscribeToEvent('onResume',()=>{
+    Router.navigateTo('home');
+});
 
 
 export class App extends VEngineTsxComponent {
@@ -23,10 +27,9 @@ export class App extends VEngineTsxComponent {
     constructor() {
         super(new HtmlTsxDOMRenderer());
         BatteryStorage.onChanged  =
+        MissedCallsStore.onChanged =
         PhoneStorage.onChanged =
-            ()=>{
-            this.triggerRendering();
-        }
+            ()=>this.triggerRendering();
         Router.onNavigated(()=>this.triggerRendering());
         Router.navigateTo('home');
 

@@ -26,15 +26,6 @@ public class BatteryStatusListener extends BroadcastReceiver {
          void onMessage(boolean isCharging);
     }
 
-    public boolean getValueForNow(Activity activity) {
-        IntentFilter iFilter = new IntentFilter();
-        iFilter.addAction(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = activity.registerReceiver(null, iFilter);
-        if (batteryStatus==null) return false;
-        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-        return status == BatteryManager.BATTERY_STATUS_CHARGING ||
-                status == BatteryManager.BATTERY_STATUS_FULL;
-    }
 
     public void register(Activity activity) {
         IntentFilter btrIntentFilter = new IntentFilter();

@@ -11,7 +11,7 @@ public class BatteryLevelListener extends BroadcastReceiver {
 
     private BatteryLevelChangedCallBack listener;
 
-    private static int calcLevel(int level, int scale) {
+    public static int calcLevel(int level, int scale) {
         float batteryPct = level / (float)scale;
         return (int)(batteryPct * 100);
     }
@@ -30,15 +30,6 @@ public class BatteryLevelListener extends BroadcastReceiver {
 
     public interface BatteryLevelChangedCallBack {
          void onMessage(int value);
-    }
-
-    public int getValueForNow(Activity activity) {
-        IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = activity.registerReceiver(null, iFilter);
-        if (batteryStatus==null) return 0;
-        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
-        return calcLevel(level, scale);
     }
 
     public void register(Activity activity) {

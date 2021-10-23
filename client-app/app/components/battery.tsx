@@ -1,18 +1,20 @@
 import {VirtualNode} from "@engine/renderable/tsx/genetic/virtualNode";
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
-import {NativeBridgeListener} from "../nativeBridgeListener";
+import {NativeBridge} from "../nativeBridge";
 
 export const BatteryStorage = {
     chargeValue: 100,
-    isCharging: true,
+    isCharging: false,
     onChanged: () => {
     },
 }
 
-setTimeout(() => {
-    NativeBridgeListener.requestEvent('onBatteryValueChanged');
-    NativeBridgeListener.requestEvent('onBatteryStatusChanged');
-}, 1000);
+
+setTimeout(async () => {
+    BatteryStorage.isCharging = await NativeBridge.callHostCommand('getBatteryStatus');
+    BatteryStorage.chargeValue = await NativeBridge.callHostCommand('getBatteryLevel');
+    BatteryStorage.onChanged();
+}, 10);
 
 const getColorByCharge = (): string => {
     const val = BatteryStorage.chargeValue;
@@ -23,13 +25,12 @@ const getColorByCharge = (): string => {
 
 }
 
-NativeBridgeListener.subscribeToEvent('onBatteryValueChanged', ({value}: { value: number }) => {
+NativeBridge.subscribeToEvent('onBatteryValueChanged', ({value}: { value: number }) => {
     BatteryStorage.chargeValue = value;
     BatteryStorage.onChanged();
 }, false);
 
-NativeBridgeListener.subscribeToEvent('onBatteryStatusChanged', ({isCharging}: { isCharging: boolean }) => {
-    console.log('is charging ', isCharging);
+NativeBridge.subscribeToEvent('onBatteryStatusChanged', ({isCharging}: { isCharging: boolean }) => {
     BatteryStorage.isCharging = isCharging;
     BatteryStorage.onChanged();
 }, false);

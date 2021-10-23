@@ -3,29 +3,23 @@ package com.victor;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.ConsoleMessage;
-import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.victor.service.bridge.JsNativeBridge;
+import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.kiosk.KioskService;
-import com.victor.service.listener.BatteryLevelListener;
-import com.victor.service.listener.BatteryStatusListener;
-import com.victor.service.listener.PhoneCallListener;
-import com.victor.service.listener.SMSReceivedListener;
+import com.victor.service.bridge.DeviceListener;
 import com.victor.service.provider.PermissionsProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends Activity {
 
     private KioskService kioskService;
+    private WebView webView;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -36,54 +30,11 @@ public class MainActivity extends Activity {
         kioskService = new KioskService(this);
 
         setContentView(R.layout.activity_main);
-        final WebView webView = this.findViewById(R.id.main_screen);
+        webView = this.findViewById(R.id.main_screen);
 
         // permissions
         PermissionsProvider permissionsProvider = new PermissionsProvider();
         permissionsProvider.requestForPermissions(this);
-
-        // listen to calls
-        PhoneCallListener callListener = PhoneCallListener.getInstance(this);
-        callListener.register(this);
-        callListener.setListener(new PhoneCallListener.OnCallMissedCallBack() {
-            @Override
-            public void onCallMissed() {
-                JsNativeBridge.sendToWebClient(webView,"onCallMissed",null);
-            }
-        });
-
-        SMSReceivedListener smsReceivedListener = new SMSReceivedListener();
-        smsReceivedListener.register(this);
-        smsReceivedListener.addSMSListner(new SMSReceivedListener.SMSReceivedListner() {
-            @Override
-            public void message(SmsMessage message) {
-                System.out.println(message);
-            }
-        });
-
-        // listen to battery level
-        final BatteryLevelListener batteryLevelListener = new BatteryLevelListener();
-        batteryLevelListener.register(this);
-        batteryLevelListener.setListener(new BatteryLevelListener.BatteryLevelChangedCallBack() {
-            @Override
-            public void onMessage(int value) {
-                Map<String,Object> map = new HashMap<>();
-                map.put("value",value);
-                JsNativeBridge.sendToWebClient(webView,"onBatteryValueChanged",map);
-            }
-        });
-
-        // listen to battery status
-        final BatteryStatusListener batteryStatusListener = new BatteryStatusListener();
-        batteryStatusListener.register(this);
-        batteryStatusListener.setListener(new BatteryStatusListener.BatteryStatusChangedCallBack() {
-            @Override
-            public void onMessage(boolean isCharging) {
-                Map<String,Object> map = new HashMap<>();
-                map.put("isCharging",isCharging);
-                JsNativeBridge.sendToWebClient(webView,"onBatteryStatusChanged",map);
-            }
-        });
 
         WebChromeClient chromeClient = new MyChromeClient();
         webView.setWebChromeClient(chromeClient);
@@ -97,35 +48,8 @@ public class MainActivity extends Activity {
         webView.getSettings().setSupportMultipleWindows(false);
         webView.getSettings().setAppCacheEnabled(true);
 
-        // add bridge
-        webView.addJavascriptInterface(new JsNativeBridge.OnMessageReceivedFromClient(){
-            @JavascriptInterface
-            public void requestEvent(String eventId) {
-                switch (eventId) {
-                    case "onBatteryValueChanged":
-                        final int value = batteryLevelListener.getValueForNow(MainActivity.this);
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Map<String,Object> map = new HashMap<>();
-                                map.put("value",value);
-                                JsNativeBridge.sendToWebClient(webView,"onBatteryValueChanged",map);
-                            }
-                        });
-                        break;
-                    case "onBatteryStatusChanged":
-                        final boolean isCharging = batteryStatusListener.getValueForNow(MainActivity.this);
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Map<String,Object> map = new HashMap<>();
-                                map.put("isCharging",isCharging);
-                                JsNativeBridge.sendToWebClient(webView,"onBatteryStatusChanged",map);
-                            }
-                        });
-                }
-            }
-        },"__host__");
+        DeviceListener deviceListener = new DeviceListener();
+        deviceListener.activate(this,webView);
 
         webView.loadUrl("file:///android_asset/index.html");
 
@@ -135,6 +59,14 @@ public class MainActivity extends Activity {
     protected void onPause() {
         super.onPause();
         kioskService.onPause(this);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView==null) return;
+        JsNativeBridge.sendToWebClient(webView, DeviceCommand.onResume.name(),null);
     }
 
     @Override
@@ -162,7 +94,7 @@ public class MainActivity extends Activity {
         if (!KioskService.HARD_KIOSK) super.onBackPressed();
     }
 
-    private class MyWebViewClient extends WebViewClient {
+    private static class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
@@ -171,7 +103,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private class MyChromeClient extends WebChromeClient {
+    private static class MyChromeClient extends WebChromeClient {
         @Override
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
             Log.d("CONSOLE",consoleMessage.message());

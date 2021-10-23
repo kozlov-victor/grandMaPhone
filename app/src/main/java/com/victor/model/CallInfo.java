@@ -1,32 +1,40 @@
 package com.victor.model;
 
-import java.util.Date;
-
 public class CallInfo {
-        private String address;
-        private Date callDate;
+    private String nameFromPhoneBook;
+    private String phone;
+    private long callDate;
 
-    public String getAddress() {
-        return address;
+    public String getNameFromPhoneBook() {
+        return nameFromPhoneBook;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setNameFromPhoneBook(String nameFromPhoneBook) {
+        this.nameFromPhoneBook = nameFromPhoneBook;
     }
 
-    public Date getCallDate() {
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public long getCallDate() {
         return callDate;
     }
 
-    public void setCallDate(Date callDate) {
+    public void setCallDate(long callDate) {
         this.callDate = callDate;
     }
 
     @Override
-        public String toString() {
-            return "CallInfo{" +
-                    "address='" + address + '\'' +
-                    ", callDate=" + callDate +
-                    '}';
-        }
+    public String toString() {
+        return "CallInfo{" +
+                "nameFromPhoneBook='" + nameFromPhoneBook + '\'' +
+                ", phone='" + phone + '\'' +
+                ", callDate=" + callDate +
+                '}';
     }
+}

@@ -17,14 +17,16 @@ import java.util.List;
 
 public class CallListProvider {
 
-    public List<CallInfo> getCallDetails(Activity activity) {
+    private final int MAX_RECORDS = 20;
+
+    public List<CallInfo> getMissedCalls(Activity activity) {
 
         List<CallInfo> result = new ArrayList<>();
         ContentResolver cr = activity.getContentResolver();
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             return result;
         }
-        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, null);
+        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE +" DESC LIMIT " + MAX_RECORDS);
         if (cursor==null) return result;
 
         int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
@@ -33,31 +35,27 @@ public class CallListProvider {
         //int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
 
         while (cursor.moveToNext()) {
-
             String callType = cursor.getString(type); // call type
             int dircode = Integer.parseInt(callType);
             if (dircode!=CallLog.Calls.MISSED_TYPE) continue;
 
             String phNumber = cursor.getString(number); // mobile number
-            String address;
             String nameFromPhoneBook = PhoneBookProvider.getInstance().getContactName(activity,phNumber);
-            if (nameFromPhoneBook!=null && nameFromPhoneBook.length()>0) {
-                address = nameFromPhoneBook;
-            } else {
-                address = phNumber;
-            }
 
             String callDate = cursor.getString(date); // call date
             Date callDayTime = new Date(Long.parseLong(callDate));
             // String callDuration = managedCursor.getString(duration);
 
             CallInfo callInfo = new CallInfo();
-            callInfo.setAddress(address);
-            callInfo.setCallDate(callDayTime);
+            callInfo.setNameFromPhoneBook(nameFromPhoneBook);
+            callInfo.setPhone(phNumber);
+            callInfo.setCallDate(callDayTime.getTime());
             result.add(callInfo);
+            //if (result.size()>MAX_RECORDS) break;
 
         }
         cursor.close();
+        //Collections.reverse(result);
         return result;
     }
 
