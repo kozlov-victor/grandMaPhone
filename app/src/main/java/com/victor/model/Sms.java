@@ -5,7 +5,7 @@ public class Sms {
     private String address;
     private String msg;
     private String readState; //"0" for have not read sms and "1" for have read sms
-    private String time;
+    private long time;
 
     public String getId() {
         return id;
@@ -39,22 +39,11 @@ public class Sms {
         this.readState = readState;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
-    }
-
-    @Override
-    public String toString() {
-        return "Sms{" +
-                "id='" + id + '\'' +
-                ", address='" + address + '\'' +
-                ", msg='" + msg + '\'' +
-                ", readState='" + readState + '\'' +
-                ", time='" + time + '\'' +
-                '}';
     }
 }

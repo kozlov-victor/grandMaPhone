@@ -9,7 +9,7 @@ import android.webkit.WebView;
 import com.victor.service.bridge.commands.Command;
 import com.victor.service.bridge.commands.DeviceCommand;
 
-public class GetBatteryStatus extends Command {
+public class GetBatteryStatusCommand extends Command {
 
     @Override
     public DeviceCommand getCommand() {

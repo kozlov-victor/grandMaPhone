@@ -13,6 +13,7 @@ public class JsNativeBridge {
 
 
     public static abstract class ClientCommandCallLIstener {
+         @SuppressWarnings("unused") // <- is used by bridge
          public abstract void callHostCommand(String commandName, String eventId);
     }
 

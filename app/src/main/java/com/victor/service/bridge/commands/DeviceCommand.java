@@ -2,6 +2,7 @@ package com.victor.service.bridge.commands;
 
 public enum DeviceCommand {
     onCallMissed,
+    onSmsReceived,
     onBatteryValueChanged,
     onBatteryStatusChanged,
     onResume,
@@ -9,5 +10,7 @@ public enum DeviceCommand {
     getBatteryStatus,
     getBatteryLevel,
     getMissedCalls,
+    getContactList,
+    getSmsList,
 
 }

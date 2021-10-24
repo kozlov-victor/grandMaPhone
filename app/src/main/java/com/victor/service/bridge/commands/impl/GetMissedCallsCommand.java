@@ -10,7 +10,7 @@ import com.victor.service.provider.CallListProvider;
 
 import java.util.List;
 
-public class GetMissedCalls extends Command {
+public class GetMissedCallsCommand extends Command {
 
     private CallListProvider callListProvider;
 

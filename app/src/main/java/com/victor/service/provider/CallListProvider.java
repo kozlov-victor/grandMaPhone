@@ -40,7 +40,7 @@ public class CallListProvider {
             if (dircode!=CallLog.Calls.MISSED_TYPE) continue;
 
             String phNumber = cursor.getString(number); // mobile number
-            String nameFromPhoneBook = PhoneBookProvider.getInstance().getContactName(activity,phNumber);
+            String nameFromPhoneBook = PhoneBookProvider.getInstance().getContactNameByPhoneNumber(activity,phNumber);
 
             String callDate = cursor.getString(date); // call date
             Date callDayTime = new Date(Long.parseLong(callDate));

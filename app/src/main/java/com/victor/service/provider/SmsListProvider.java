@@ -16,6 +16,8 @@ import java.util.List;
 
 public class SmsListProvider {
 
+    private final int MAX_RECORDS = 20;
+
     public List<Sms> getInbox(Activity activity) {
         List<Sms> result = new ArrayList<>();
 
@@ -27,8 +29,9 @@ public class SmsListProvider {
         Uri message = Uri.parse("content://sms/inbox");
         ContentResolver cr = activity.getContentResolver();
 
-        Cursor c = cr.query(message, null, null, null, null);
+        Cursor c = cr.query(message, null, null, null, "date DESC LIMIT " + MAX_RECORDS);
         activity.startManagingCursor(c);
+        if (c==null) return result;
         int totalSMS = c.getCount();
 
         if (c.moveToFirst()) {
@@ -37,7 +40,7 @@ public class SmsListProvider {
                 objSms.setId(c.getString(c.getColumnIndexOrThrow("_id")));
                 String address = c.getString(c
                         .getColumnIndexOrThrow("address"));
-                String nameFromPhoneBook = PhoneBookProvider.getInstance().getContactName(activity,address);
+                String nameFromPhoneBook = PhoneBookProvider.getInstance().getContactNameByPhoneNumber(activity,address);
                 if (nameFromPhoneBook!=null && nameFromPhoneBook.length()>0) {
                     objSms.setAddress(nameFromPhoneBook);
                 } else {
@@ -46,7 +49,7 @@ public class SmsListProvider {
 
                 objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
                 objSms.setReadState(c.getString(c.getColumnIndex("read")));
-                objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
+                objSms.setTime(c.getLong(c.getColumnIndexOrThrow("date")));
 
                 result.add(objSms);
                 c.moveToNext();

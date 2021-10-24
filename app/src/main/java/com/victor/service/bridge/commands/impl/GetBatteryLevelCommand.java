@@ -10,7 +10,7 @@ import com.victor.service.bridge.commands.Command;
 import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.listener.BatteryLevelListener;
 
-public class GetBatteryLevel extends Command {
+public class GetBatteryLevelCommand extends Command {
 
     @Override
     public DeviceCommand getCommand() {
