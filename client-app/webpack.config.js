@@ -5,6 +5,7 @@ const fs = require('fs');
 const TerserPlugin = require('terser-webpack-plugin');
 const cliUI = require('./node_tools/cliUI');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const {engineTransformer} = require("./node_tools/build/engineTransformer");
 
 
 class WebpackDonePlugin{
@@ -95,6 +96,15 @@ module.exports = async (env={})=>{
         },
         module: {
             rules: [
+                {
+                    test: /\.tsx$/,
+                    enforce: 'pre',
+                    use: [
+                        {
+                            loader: "ts-engine-precompiler/tsx-precompiler"
+                        },
+                    ]
+                },
                 {
                     test: /\.tsx?$/,
                     use: [

@@ -45,7 +45,7 @@ export const HomePage = ()=>{
             <div className="flex1" onclick={navigateToPhoneBook}>
                 <PhoneBook/>
             </div>
-            <div className="flex1">
+            <div className="flex1" onclick={navigateToSmsList}>
                 <Sms/>
             </div>
         </>

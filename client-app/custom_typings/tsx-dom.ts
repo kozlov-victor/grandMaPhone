@@ -3,6 +3,7 @@ interface ICommonElement<T> {
     className?: string;
     key?:number|string;
     ref?:(el:T)=>void;
+    __id?: number;
 }
 
 

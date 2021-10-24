@@ -13,7 +13,7 @@ import {MissedCallsPage, MissedCallsStore} from "./pages/missedCallsPage";
 import {Router} from "./router/router";
 import {PhoneBookPage, PhoneBookStore} from "./pages/phoneBookPage";
 import {SmsStorage} from "./components/sms";
-import {SmsListStore} from "./pages/SmsListPage";
+import {SmsListPage, SmsListStore} from "./pages/SmsListPage";
 
 
 (window as any).__cb__ = (event:{eventId:string,payload:any})=>{
@@ -62,13 +62,10 @@ export class App extends VEngineTsxComponent {
                             <Battery/>
                         </div>
                     </div>
-
-                    {Router.getCurrentUrl()}
-
                     {Router.getCurrentUrl()==='home' && <HomePage/>}
                     {Router.getCurrentUrl()==='missedCalls' && <MissedCallsPage/>}
                     {Router.getCurrentUrl()==='phoneBook' && <PhoneBookPage/>}
-                    {/*{Router.getCurrentUrl()==='smsList' && <SmsListPage/>}*/}
+                    {Router.getCurrentUrl()==='smsList' && <SmsListPage/>}
                 </div>
             </>
         );
