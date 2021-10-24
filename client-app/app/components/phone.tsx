@@ -1,19 +1,19 @@
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
 import {NativeBridge} from "../nativeBridge";
 
-export const PhoneStorage = {
+export const MissedCallsStorate = {
     missedCallsNumber: 0,
     onChanged: () => {
     },
 }
 
 NativeBridge.subscribeToEvent('onCallMissed', () => {
-    PhoneStorage.missedCallsNumber++;
-    PhoneStorage.onChanged();
+    MissedCallsStorate.missedCallsNumber++;
+    MissedCallsStorate.onChanged();
 }, false);
 
 const getFillColor = ()=>{
-    if (PhoneStorage.missedCallsNumber>0) return '#d70000';
+    if (MissedCallsStorate.missedCallsNumber>0) return '#d70000';
     else return '#007000';
 }
 
@@ -38,8 +38,8 @@ export const Phone = (props:{height?:number} = {}) => {
                     transform="translate(0.5 -0.5)" style={`fill:${fillColor};stroke:#000;stroke-miterlimit:10`}/>
             </svg>
             {
-                PhoneStorage.missedCallsNumber>0 &&
-                <div className="badge" style={{bottom:'10px',right:'20px'}}>{PhoneStorage.missedCallsNumber}</div>
+                MissedCallsStorate.missedCallsNumber>0 &&
+                <div className="badge" style={{bottom:'10px',right:'20px'}}>{MissedCallsStorate.missedCallsNumber}</div>
             }
         </div>
     );

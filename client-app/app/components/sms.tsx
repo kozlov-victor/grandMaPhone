@@ -1,9 +1,18 @@
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
-import {PhoneStorage} from "./phone";
+import {NativeBridge} from "../nativeBridge";
 
 export const SmsStorage = {
     unreadSmsNumber: 0,
+    onChanged: () => {
+    },
 }
+
+
+NativeBridge.subscribeToEvent('onSmsReceived', () => {
+    SmsStorage.unreadSmsNumber++;
+    SmsStorage.onChanged();
+}, false);
+
 
 const getFillColor = ()=>{
     if (SmsStorage.unreadSmsNumber>0) return '#d70000';

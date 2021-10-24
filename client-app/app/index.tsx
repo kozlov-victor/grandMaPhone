@@ -5,12 +5,15 @@ import {HTMLElementWrap} from "@engine/renderable/tsx/dom/HTMLElementWrap";
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
 import {ReactiveMethod} from "@engine/renderable/tsx/genetic/reactiveMethod";
 import {Battery, BatteryStorage} from "./components/battery";
-import {PhoneStorage} from "./components/phone";
+import {MissedCallsStorate} from "./components/phone";
 import {Clock, ClockStorage} from "./components/clock";
 import {NativeBridge} from "./nativeBridge";
-import {Home} from "./pages/home";
-import {MissedCalls, MissedCallsStore} from "./pages/missedCalls";
+import {HomePage} from "./pages/homePage";
+import {MissedCallsPage, MissedCallsStore} from "./pages/missedCallsPage";
 import {Router} from "./router/router";
+import {PhoneBookPage, PhoneBookStore} from "./pages/phoneBookPage";
+import {SmsStorage} from "./components/sms";
+import {SmsListStore} from "./pages/SmsListPage";
 
 
 (window as any).__cb__ = (event:{eventId:string,payload:any})=>{
@@ -26,10 +29,14 @@ export class App extends VEngineTsxComponent {
 
     constructor() {
         super(new HtmlTsxDOMRenderer());
-        BatteryStorage.onChanged  =
-        MissedCallsStore.onChanged =
-        PhoneStorage.onChanged =
+        BatteryStorage.onChanged        =
+        MissedCallsStore.onChanged      =
+        PhoneBookStore.onChanged        =
+        SmsStorage.onChanged            =
+        SmsListStore.onChanged          =
+        MissedCallsStorate.onChanged    =
             ()=>this.triggerRendering();
+
         Router.onNavigated(()=>this.triggerRendering());
         Router.navigateTo('home');
 
@@ -55,8 +62,13 @@ export class App extends VEngineTsxComponent {
                             <Battery/>
                         </div>
                     </div>
-                    {Router.getCurrentUrl()==='home' && <Home/>}
-                    {Router.getCurrentUrl()==='missedCalls' && <MissedCalls/>}
+
+                    {Router.getCurrentUrl()}
+
+                    {Router.getCurrentUrl()==='home' && <HomePage/>}
+                    {Router.getCurrentUrl()==='missedCalls' && <MissedCallsPage/>}
+                    {Router.getCurrentUrl()==='phoneBook' && <PhoneBookPage/>}
+                    {/*{Router.getCurrentUrl()==='smsList' && <SmsListPage/>}*/}
                 </div>
             </>
         );

@@ -28,7 +28,7 @@ export namespace NativeBridge {
         });
         subscribeToEvent(eventId,(payload:PAYLOAD)=>resolveFn(payload),true);
         setTimeout(()=>{
-            (window as any).__host__.callHostCommand(commandName,eventId);
+            (window as any).__host__?.callHostCommand(commandName,eventId);
         },1);
         return p;
     }

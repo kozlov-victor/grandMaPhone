@@ -1,8 +1,9 @@
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
-import {Phone, PhoneStorage} from "../components/phone";
+import {Phone, MissedCallsStorate} from "../components/phone";
 import {NativeBridge} from "../nativeBridge";
 import {Home} from "../components/home";
 import {Router} from "../router/router";
+import {formatDate} from "../utils/timeUtil";
 
 interface IMissedCall {
     nameFromPhoneBook?: string;
@@ -24,27 +25,12 @@ export const MissedCallsStore = {
     },
 };
 
-const leadZero = (n:number):string=>{
-    if (n<9) return `0${n}`;
-    else return `${n}`;
-}
-
-const formatDate = (dt:number):string=>{
-    const date = new Date(dt);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const hours = date.getHours();
-    const min = date.getMinutes();
-    const z = leadZero;
-    return `${z(day)}.${z(month)}.${year} ${z(hours)}:${z(min)}`;
-}
 
 const navigateToHome = ()=>{
     Router.navigateTo('home');
 }
 
-export const MissedCalls = ()=>{
+export const MissedCallsPage = ()=>{
     return (
         <>
             <h3>Пропущенные звонки</h3>
