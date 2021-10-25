@@ -3,6 +3,8 @@ package com.victor.service.bridge;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -14,7 +16,7 @@ public class JsNativeBridge {
 
     public static abstract class ClientCommandCallLIstener {
          @SuppressWarnings("unused") // <- is used by bridge
-         public abstract void callHostCommand(String commandName, String eventId);
+         public abstract void callHostCommand(String commandName, String eventId, @Nullable String jsonParams);
     }
 
     public static void sendToWebClient(WebView webView, String eventId, Object payload) {

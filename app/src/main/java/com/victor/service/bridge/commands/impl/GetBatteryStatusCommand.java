@@ -17,7 +17,7 @@ public class GetBatteryStatusCommand extends Command {
     }
 
     @Override
-    public void execute(final String commandId, Activity activity, final WebView webView) {
+    public void execute(final String commandId,  String jsonParams, Activity activity, final WebView webView) {
 
         boolean isCharging = false;
         IntentFilter iFilter = new IntentFilter();

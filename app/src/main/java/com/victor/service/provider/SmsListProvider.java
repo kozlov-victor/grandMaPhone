@@ -30,7 +30,7 @@ public class SmsListProvider {
         ContentResolver cr = activity.getContentResolver();
 
         Cursor c = cr.query(message, null, null, null, "date DESC LIMIT " + MAX_RECORDS);
-        activity.startManagingCursor(c);
+
         if (c==null) return result;
         int totalSMS = c.getCount();
 
@@ -38,8 +38,7 @@ public class SmsListProvider {
             for (int i = 0; i < totalSMS; i++) {
                 Sms objSms = new Sms();
                 objSms.setId(c.getString(c.getColumnIndexOrThrow("_id")));
-                String address = c.getString(c
-                        .getColumnIndexOrThrow("address"));
+                String address = c.getString(c.getColumnIndexOrThrow("address"));
                 String nameFromPhoneBook = PhoneBookProvider.getInstance().getContactNameByPhoneNumber(activity,address);
                 if (nameFromPhoneBook!=null && nameFromPhoneBook.length()>0) {
                     objSms.setAddress(nameFromPhoneBook);

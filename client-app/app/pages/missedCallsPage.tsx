@@ -1,5 +1,5 @@
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
-import {Phone, MissedCallsStorate} from "../components/phone";
+import {Phone, MissedCallsStorage} from "../components/phone";
 import {NativeBridge} from "../nativeBridge";
 import {Home} from "../components/home";
 import {Router} from "../router/router";
@@ -50,7 +50,7 @@ export const MissedCallsPage = ()=>{
                     }
                     {
                         !MissedCallsStore.pending && MissedCallsStore.missedCalls.map(it=>
-                            <li>
+                            <li  onclick={_=> NativeBridge.callHostCommand('dialNumber',{number:it.phone})}>
                                 <div>{it.nameFromPhoneBook || it.phone}</div>
                                 <div>{formatDate(it.callDate)}</div>
                             </li>

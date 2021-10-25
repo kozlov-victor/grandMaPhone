@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        kioskService.onPause(this);
+        kioskService.bringToFront(this);
     }
 
 
@@ -66,6 +66,7 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         if (webView==null) return;
+        kioskService.bringToFront(this);
         JsNativeBridge.sendToWebClient(webView, DeviceCommand.onResume.name(),null);
     }
 

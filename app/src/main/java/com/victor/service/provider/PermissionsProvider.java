@@ -9,32 +9,32 @@ import androidx.core.content.ContextCompat;
 
 public class PermissionsProvider {
 
+    private int code = 1;
+
+    private void request(Activity activity,String permission) {
+        if (ContextCompat.checkSelfPermission(activity,
+                permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{permission}, code++);
+        }
+    }
+
     public void requestForPermissions(Activity activity) {
         // listen to sms
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.RECEIVE_SMS}, 1);
-        }
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.READ_SMS}, 1);
-        }
+        request(activity,Manifest.permission.RECEIVE_SMS);
+        request(activity,Manifest.permission.READ_SMS);
 
         // phonebook
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.READ_CONTACTS}, 1);
-        }
+        request(activity,Manifest.permission.READ_CONTACTS);
+
+        // make call
+        request(activity,Manifest.permission.CALL_PHONE);
 
         // call logs
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.READ_CALL_LOG}, 1);
-        }
+        request(activity,Manifest.permission.READ_CALL_LOG);
+
+        // get income or dial number
+        request(activity,Manifest.permission.READ_PHONE_STATE);
     }
 
 }

@@ -106,8 +106,7 @@ public class KioskService {
         }
     }
 
-    public void onPause(Activity activity) {
-        if (PhoneCallListener.getInstance(activity).isPhoneCalling()) return;
+    public void bringToFront(Activity activity) {
         if (HARD_KIOSK) {
             ActivityManager activityManager = (ActivityManager) activity.getApplicationContext()
                     .getSystemService(Context.ACTIVITY_SERVICE);

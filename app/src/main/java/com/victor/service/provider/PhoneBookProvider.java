@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.victor.model.PhoneBookRecord;
@@ -28,8 +29,9 @@ public class PhoneBookProvider {
         return instance;
     }
 
-    public String getContactNameByPhoneNumber(Activity activity, String phoneNumber) {
+    public @Nullable String getContactNameByPhoneNumber(Activity activity, String phoneNumber) {
 
+        if (phoneNumber.equals("")) return "";
         if (nameByNumberCache.containsKey(phoneNumber)) return nameByNumberCache.get(phoneNumber);
 
         if (ContextCompat.checkSelfPermission(activity,

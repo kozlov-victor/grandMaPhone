@@ -5,8 +5,13 @@ import android.telephony.SmsMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
+import androidx.annotation.Nullable;
+
+import com.victor.model.PhoneCallStateInfo;
 import com.victor.service.bridge.commands.CommandExecuter;
 import com.victor.service.bridge.commands.DeviceCommand;
+import com.victor.service.bridge.commands.impl.DialNumberCommand;
+import com.victor.service.bridge.commands.impl.EndCallCommand;
 import com.victor.service.bridge.commands.impl.GetBatteryStatusCommand;
 import com.victor.service.bridge.commands.impl.GetBatteryLevelCommand;
 import com.victor.service.bridge.commands.impl.GetContactListCommand;
@@ -16,19 +21,24 @@ import com.victor.service.listener.BatteryLevelListener;
 import com.victor.service.listener.BatteryStatusListener;
 import com.victor.service.listener.PhoneCallListener;
 import com.victor.service.listener.SMSReceivedListener;
+import com.victor.service.provider.PhoneBookProvider;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DeviceListener {
 
-    private void listenToCalls(Activity activity, final WebView webView) {
+    private void listenToCalls(final Activity activity, final WebView webView) {
         PhoneCallListener callListener = PhoneCallListener.getInstance(activity);
         callListener.register(activity);
-        callListener.setListener(new PhoneCallListener.OnCallMissedCallBack() {
+        callListener.setListener(new PhoneCallListener.OnCallStateChangedCallBack() {
             @Override
-            public void onCallMissed() {
-                JsNativeBridge.sendToWebClient(webView, DeviceCommand.onCallMissed.name(),null);
+            public void onCallStateChanged(PhoneCallListener.PhoneCallState phoneCallState, String phoneNumber) {
+                PhoneCallStateInfo phoneCallStateInfo = new PhoneCallStateInfo();
+                phoneCallStateInfo.setPhoneCallState(phoneCallState);
+                phoneCallStateInfo.setPhoneNumber(phoneNumber);
+                phoneCallStateInfo.setAddress(PhoneBookProvider.getInstance().getContactNameByPhoneNumber(activity,phoneNumber));
+                JsNativeBridge.sendToWebClient(webView, DeviceCommand.onCallStateChanged.name(),phoneCallStateInfo);
             }
         });
     }
@@ -84,12 +94,14 @@ public class DeviceListener {
         commandExecuter.registerCommand(new GetMissedCallsCommand());
         commandExecuter.registerCommand(new GetContactListCommand());
         commandExecuter.registerCommand(new GetSmsListCommand());
+        commandExecuter.registerCommand(new DialNumberCommand());
+        commandExecuter.registerCommand(new EndCallCommand());
 
         webView.addJavascriptInterface(new JsNativeBridge.ClientCommandCallLIstener(){
             @JavascriptInterface
             @Override
-            public void callHostCommand(String commandName, String eventId) {
-                commandExecuter.executeCommand(DeviceCommand.valueOf(commandName),eventId,activity,webView);
+            public void callHostCommand(String commandName, String eventId, @Nullable String jsonParams) {
+                commandExecuter.executeCommand(DeviceCommand.valueOf(commandName),eventId,jsonParams,activity,webView);
             }
         },"__host__");
     }

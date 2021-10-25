@@ -18,7 +18,7 @@ public class GetContactListCommand extends Command {
     }
 
     @Override
-    public void execute(String commandId, Activity activity, WebView webView) {
+    public void execute(String commandId,  String jsonParams, Activity activity, WebView webView) {
         List<PhoneBookRecord> contactList = PhoneBookProvider.getInstance().getContactList(activity);
         sendPayloadToClient(commandId,activity,webView,contactList);
     }

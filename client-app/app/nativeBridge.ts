@@ -19,7 +19,7 @@ export namespace NativeBridge {
         }
     }
 
-    export const callHostCommand = async <PAYLOAD>(commandName:string):Promise<PAYLOAD>=> {
+    export const callHostCommand = async <PAYLOAD>(commandName:string,params:any = undefined):Promise<PAYLOAD>=> {
         const eventId = nextId.toString();
         nextId++;
         let resolveFn:(payload:PAYLOAD)=>void = undefined!;
@@ -28,7 +28,8 @@ export namespace NativeBridge {
         });
         subscribeToEvent(eventId,(payload:PAYLOAD)=>resolveFn(payload),true);
         setTimeout(()=>{
-            (window as any).__host__?.callHostCommand(commandName,eventId);
+            const paramsSerialized:string = params?JSON.stringify(params):null!;
+            (window as any).__host__?.callHostCommand(commandName,eventId,paramsSerialized);
         },1);
         return p;
     }

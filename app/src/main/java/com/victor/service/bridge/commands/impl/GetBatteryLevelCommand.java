@@ -18,7 +18,7 @@ public class GetBatteryLevelCommand extends Command {
     }
 
     @Override
-    public void execute(final String commandId, Activity activity, final WebView webView) {
+    public void execute(final String commandId,  String jsonParams, Activity activity, final WebView webView) {
 
         int level = 0;
         IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);

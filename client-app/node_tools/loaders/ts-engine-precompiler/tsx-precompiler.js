@@ -1,12 +1,23 @@
+const tsquery = require("@phenomnomnominal/tsquery").tsquery;
+const ts = require('typescript');
+
 let id = 0;
+
 module.exports = function(content) {
-    content = content.replace(/<(.|\n)*?>/g,substring => {
-        if (substring==='<>') return substring; // ignore fragment node
-        if (substring[1]===substring[1].toUpperCase()) return substring; // ignore component node
-        if (substring.indexOf('/')>-1) { // self closing tag
-            return substring.replace('/',` __id={${id++}}/`);
-        }
-        return substring.substring(0,substring.length-1) + ` __id={${id++}}>`;
+    const ast = tsquery.ast(content,undefined,2); // tsx
+    const allTsxNodes = tsquery(ast, `JsxOpeningElement`);
+    allTsxNodes.forEach(node=>{
+        node.attributes.properties.push(
+            // https://ts-ast-viewer.com/#code/G4QwTgBCELwQPAEwJbAgZxgbwMwF8A+eAehWAKA
+            ts.createJsxAttribute(
+                ts.createIdentifier("__id"),
+                ts.createJsxExpression(
+                    undefined,
+                    ts.createNumericLiteral(`${id}`)
+                )
+            )
+        );
+        id++;
     });
-    return content;
+    return ts.createPrinter().printFile(ast);
 }

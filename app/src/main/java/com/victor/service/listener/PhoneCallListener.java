@@ -12,34 +12,36 @@ public class PhoneCallListener extends PhoneStateListener {
 
 
     private static PhoneCallListener instance;
+    private Activity activity;
 
 
-    private OnCallMissedCallBack listener;
+    private OnCallStateChangedCallBack listener;
 
-    public void setListener(OnCallMissedCallBack onCallMissedCallBack) {
+    public void setListener(OnCallStateChangedCallBack onCallMissedCallBack) {
         listener = onCallMissedCallBack;
     }
 
-    public interface OnCallMissedCallBack {
-        void onCallMissed();
+    public interface OnCallStateChangedCallBack {
+        void onCallStateChanged(PhoneCallState phoneCallState, String phoneNumber);
     }
 
-    public static PhoneCallListener getInstance(Activity activity){
-        if (instance==null) instance = new PhoneCallListener();
+    public static PhoneCallListener getInstance(Activity activity) {
+        if (instance == null) instance = new PhoneCallListener(activity);
         return instance;
     }
 
-    private PhoneCallListener() {
-
+    private PhoneCallListener(Activity activity) {
+        this.activity = activity;
     }
 
     public void register(Activity activity) {
         TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
-        if (telephonyManager!=null) telephonyManager.listen(this, PhoneStateListener.LISTEN_CALL_STATE);
+        if (telephonyManager != null)
+            telephonyManager.listen(this, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     @Override
-    public void onCallStateChanged(int state, String incomingNumber) {
+    public void onCallStateChanged(int state, String phoneNumber) {
 
         if (TelephonyManager.CALL_STATE_RINGING == state) {
             // phone ringing
@@ -49,12 +51,16 @@ public class PhoneCallListener extends PhoneStateListener {
         if (TelephonyManager.CALL_STATE_OFFHOOK == state) {
             // active
             isPhoneCalling = true;
+            if (listener != null) {
+                listener.onCallStateChanged(PhoneCallState.STARTED,phoneNumber);
+            }
         }
 
         if (TelephonyManager.CALL_STATE_IDLE == state) {
             if (prevState==TelephonyManager.CALL_STATE_RINGING) {
-                //"missed " + incomingNumber)
-                if (listener!=null) listener.onCallMissed();
+                if (listener!=null) listener.onCallStateChanged(PhoneCallState.MISSED,phoneNumber);
+            } else if (prevState==TelephonyManager.CALL_STATE_OFFHOOK) {
+                if (listener!=null) listener.onCallStateChanged(PhoneCallState.FINISHED,phoneNumber);
             }
             isPhoneCalling = false;
         }
@@ -65,4 +71,13 @@ public class PhoneCallListener extends PhoneStateListener {
         return this.isPhoneCalling;
     }
 
+    public void setPhoneCalling(boolean phoneCalling) {
+        isPhoneCalling = phoneCalling;
+    }
+
+    public enum PhoneCallState {
+        MISSED,
+        FINISHED,
+        STARTED
+    }
 }

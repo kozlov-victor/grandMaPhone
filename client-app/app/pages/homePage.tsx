@@ -1,4 +1,4 @@
-import {Phone, MissedCallsStorate} from "../components/phone";
+import {Phone, MissedCallsStorage} from "../components/phone";
 import {PhoneBook} from "../components/phoneBook";
 import {Sms} from "../components/sms";
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
@@ -9,7 +9,7 @@ import {SmsListStore} from "./SmsListPage";
 
 const navigateToMissedCalls = ():void=>{
     Router.navigateTo('missedCalls');
-    MissedCallsStorate.missedCallsNumber = 0;
+    MissedCallsStorage.missedCallsNumber = 0;
     MissedCallsStore.
         loadMissedPhoneList().
         catch(e=>{

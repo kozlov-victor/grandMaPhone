@@ -3,6 +3,8 @@ package com.victor.service.bridge.commands.impl;
 import android.app.Activity;
 import android.webkit.WebView;
 
+import androidx.annotation.Nullable;
+
 import com.victor.model.Sms;
 import com.victor.service.bridge.commands.Command;
 import com.victor.service.bridge.commands.DeviceCommand;
@@ -20,7 +22,7 @@ public class GetSmsListCommand extends Command {
     }
 
     @Override
-    public void execute(String commandId, Activity activity, WebView webView) {
+    public void execute(String commandId, @Nullable String jsonParams,Activity activity, WebView webView) {
         if (smsListProvider==null) smsListProvider = new SmsListProvider();
         List<Sms> smsList = smsListProvider.getInbox(activity);
         sendPayloadToClient(commandId,activity,webView,smsList);

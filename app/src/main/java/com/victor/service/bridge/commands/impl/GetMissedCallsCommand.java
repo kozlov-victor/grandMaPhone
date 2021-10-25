@@ -20,7 +20,7 @@ public class GetMissedCallsCommand extends Command {
     }
 
     @Override
-    public void execute(final String commandId, Activity activity, final WebView webView) {
+    public void execute(final String commandId,  String jsonParams,Activity activity, final WebView webView) {
         if (callListProvider==null) callListProvider = new CallListProvider();
         final List<CallInfo> missedCalls = callListProvider.getMissedCalls(activity);
         sendPayloadToClient(commandId,activity,webView,missedCalls);
