@@ -11,7 +11,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.victor.model.DialNumber;
-import com.victor.service.bridge.commands.Command;
+import com.victor.service.bridge.commands.base.Command;
 import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.listener.PhoneCallListener;
 
@@ -25,7 +25,7 @@ public class DialNumberCommand extends Command {
     }
 
     @Override
-    public void execute(String commandId, String jsonParams, Activity activity, WebView webView) {
+    protected Object execute(String commandId, String jsonParams, Activity activity, WebView webView) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             DialNumber dialNumber = objectMapper.readValue(jsonParams, DialNumber.class);
@@ -34,12 +34,13 @@ public class DialNumberCommand extends Command {
                     replace(" ", "").replace("-", "");
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + numberCleared));
             if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                return;
+                return null;
             }
             PhoneCallListener.getInstance(activity).setPhoneCalling(true);
             activity.startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 }

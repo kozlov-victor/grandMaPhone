@@ -10,16 +10,20 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.victor.service.bridge.DeviceListener;
 import com.victor.service.bridge.JsNativeBridge;
 import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.kiosk.KioskService;
-import com.victor.service.bridge.DeviceListener;
 import com.victor.service.provider.PermissionsProvider;
+
+import java.text.ParseException;
+import java.util.Arrays;
 
 public class MainActivity extends Activity {
 
     private KioskService kioskService;
     private WebView webView;
+    private DeviceListener deviceListener;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -31,10 +35,6 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
         webView = this.findViewById(R.id.main_screen);
-
-        // permissions
-        PermissionsProvider permissionsProvider = new PermissionsProvider();
-        permissionsProvider.requestForPermissions(this);
 
         WebChromeClient chromeClient = new MyChromeClient();
         webView.setWebChromeClient(chromeClient);
@@ -48,9 +48,11 @@ public class MainActivity extends Activity {
         webView.getSettings().setSupportMultipleWindows(false);
         webView.getSettings().setAppCacheEnabled(true);
 
-        DeviceListener deviceListener = new DeviceListener();
-        deviceListener.activate(this,webView);
-
+        deviceListener = new DeviceListener();
+        deviceListener.setUpBridge(this,webView);
+        if (PermissionsProvider.hasAllPermissions(this)) {
+            deviceListener.setUpListenersOnce(this,webView);
+        }
         webView.loadUrl("file:///android_asset/index.html");
 
     }
@@ -67,13 +69,13 @@ public class MainActivity extends Activity {
         super.onResume();
         if (webView==null) return;
         kioskService.bringToFront(this);
-        JsNativeBridge.sendToWebClient(webView, DeviceCommand.onResume.name(),null);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // Do nothing for key home, active tasks, back
         if (!KioskService.HARD_KIOSK) super.onKeyDown(keyCode,event);
+        if (keyCode==KeyEvent.KEYCODE_HEADSETHOOK) return super.onKeyDown(keyCode,event); // allow accept call
         return KioskService.HARD_KIOSK;
     }
 
@@ -93,6 +95,14 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         if (!KioskService.HARD_KIOSK) super.onBackPressed();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (PermissionsProvider.hasAllPermissions(this)) {
+            deviceListener.setUpListenersOnce(this,webView);
+        }
+        JsNativeBridge.sendToWebClient(webView, DeviceCommand.onPermissionGranted.name(),null);
     }
 
     private static class MyWebViewClient extends WebViewClient {

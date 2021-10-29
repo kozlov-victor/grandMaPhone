@@ -10,9 +10,7 @@ public class PhoneCallListener extends PhoneStateListener {
     private boolean isPhoneCalling = false;
     private int prevState = -1;
 
-
     private static PhoneCallListener instance;
-    private Activity activity;
 
 
     private OnCallStateChangedCallBack listener;
@@ -31,7 +29,7 @@ public class PhoneCallListener extends PhoneStateListener {
     }
 
     private PhoneCallListener(Activity activity) {
-        this.activity = activity;
+
     }
 
     public void register(Activity activity) {
@@ -46,6 +44,7 @@ public class PhoneCallListener extends PhoneStateListener {
         if (TelephonyManager.CALL_STATE_RINGING == state) {
             // phone ringing
             isPhoneCalling = true;
+            if (listener!=null) listener.onCallStateChanged(PhoneCallState.RINGING,phoneNumber);
         }
 
         if (TelephonyManager.CALL_STATE_OFFHOOK == state) {
@@ -76,6 +75,7 @@ public class PhoneCallListener extends PhoneStateListener {
     }
 
     public enum PhoneCallState {
+        RINGING,
         MISSED,
         FINISHED,
         STARTED

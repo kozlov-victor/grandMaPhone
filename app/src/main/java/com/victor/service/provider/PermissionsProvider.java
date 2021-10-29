@@ -3,38 +3,56 @@ package com.victor.service.provider;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.os.Build;
 
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PermissionsProvider {
 
-    private int code = 1;
+    private static List<String> PERMISSIONS = new ArrayList<>();
 
-    private void request(Activity activity,String permission) {
-        if (ContextCompat.checkSelfPermission(activity,
-                permission) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{permission}, code++);
+    static {
+
+        PERMISSIONS.addAll(
+            Arrays.asList(
+
+                // get income or dial number
+                Manifest.permission.READ_PHONE_STATE,
+
+                // call logs
+                Manifest.permission.READ_CALL_LOG,
+
+                // listen to sms
+                Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.READ_SMS,
+
+                // phonebook
+                Manifest.permission.READ_CONTACTS,
+
+                // make call
+                Manifest.permission.CALL_PHONE
+            )
+        );
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PERMISSIONS.add(Manifest.permission.ANSWER_PHONE_CALLS);
         }
     }
 
-    public void requestForPermissions(Activity activity) {
-        // listen to sms
-        request(activity,Manifest.permission.RECEIVE_SMS);
-        request(activity,Manifest.permission.READ_SMS);
+    public List<String> getAllAppPermissions() {
+        return PERMISSIONS;
+    }
 
-        // phonebook
-        request(activity,Manifest.permission.READ_CONTACTS);
-
-        // make call
-        request(activity,Manifest.permission.CALL_PHONE);
-
-        // call logs
-        request(activity,Manifest.permission.READ_CALL_LOG);
-
-        // get income or dial number
-        request(activity,Manifest.permission.READ_PHONE_STATE);
+    public static boolean hasAllPermissions(Activity activity) {
+        for (String permission : PERMISSIONS) {
+            boolean granted = ActivityCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED;
+            if (!granted) return false;
+        }
+        return true;
     }
 
 }

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.webkit.WebView;
 
 import com.victor.model.PhoneBookRecord;
-import com.victor.service.bridge.commands.Command;
+import com.victor.service.bridge.commands.base.Command;
 import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.provider.PhoneBookProvider;
 
@@ -18,8 +18,8 @@ public class GetContactListCommand extends Command {
     }
 
     @Override
-    public void execute(String commandId,  String jsonParams, Activity activity, WebView webView) {
+    protected Object execute(String commandId,  String jsonParams, Activity activity, WebView webView) {
         List<PhoneBookRecord> contactList = PhoneBookProvider.getInstance().getContactList(activity);
-        sendPayloadToClient(commandId,activity,webView,contactList);
+        return contactList;
     }
 }

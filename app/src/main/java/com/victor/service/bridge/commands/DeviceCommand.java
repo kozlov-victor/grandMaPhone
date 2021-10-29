@@ -5,8 +5,9 @@ public enum DeviceCommand {
     onSmsReceived,
     onBatteryValueChanged,
     onBatteryStatusChanged,
-    onResume,
+    onPermissionGranted,
 
+    getPermissionsInfo,
     getBatteryStatus,
     getBatteryLevel,
     getMissedCalls,
@@ -15,5 +16,7 @@ public enum DeviceCommand {
 
     dialNumber,
     endCall,
+    acceptCall,
+    requestPermission,
 
 }

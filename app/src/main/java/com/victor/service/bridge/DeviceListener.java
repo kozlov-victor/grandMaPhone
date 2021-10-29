@@ -10,13 +10,16 @@ import androidx.annotation.Nullable;
 import com.victor.model.PhoneCallStateInfo;
 import com.victor.service.bridge.commands.CommandExecuter;
 import com.victor.service.bridge.commands.DeviceCommand;
+import com.victor.service.bridge.commands.impl.AcceptCallCommand;
 import com.victor.service.bridge.commands.impl.DialNumberCommand;
 import com.victor.service.bridge.commands.impl.EndCallCommand;
 import com.victor.service.bridge.commands.impl.GetBatteryStatusCommand;
 import com.victor.service.bridge.commands.impl.GetBatteryLevelCommand;
 import com.victor.service.bridge.commands.impl.GetContactListCommand;
 import com.victor.service.bridge.commands.impl.GetMissedCallsCommand;
+import com.victor.service.bridge.commands.impl.GetPermissionInfoCommand;
 import com.victor.service.bridge.commands.impl.GetSmsListCommand;
+import com.victor.service.bridge.commands.impl.RequestPermissionCommand;
 import com.victor.service.listener.BatteryLevelListener;
 import com.victor.service.listener.BatteryStatusListener;
 import com.victor.service.listener.PhoneCallListener;
@@ -28,7 +31,9 @@ import java.util.Map;
 
 public class DeviceListener {
 
-    private void listenToCalls(final Activity activity, final WebView webView) {
+    private static boolean isListenedToServices = false;
+
+    private void listenToCallState(final Activity activity, final WebView webView) {
         PhoneCallListener callListener = PhoneCallListener.getInstance(activity);
         callListener.register(activity);
         callListener.setListener(new PhoneCallListener.OnCallStateChangedCallBack() {
@@ -42,6 +47,7 @@ public class DeviceListener {
             }
         });
     }
+
 
     private void listenToSmsReceived(Activity activity, final WebView webView) {
         SMSReceivedListener smsReceivedListener = new SMSReceivedListener();
@@ -80,14 +86,16 @@ public class DeviceListener {
         });
     }
 
-    private void setUpListeners(Activity activity, WebView webView) {
-        listenToCalls(activity,webView);
+    public void setUpListenersOnce(Activity activity, WebView webView) {
+        if (isListenedToServices) return;
+        isListenedToServices = true;
+        listenToCallState(activity,webView);
         listenToSmsReceived(activity,webView);
         listenToBatteryLevel(activity, webView);
         listenToBatteryStatus(activity, webView);
     }
 
-    private void setUpBridge(final Activity activity, final WebView webView) {
+    public void setUpBridge(final Activity activity, final WebView webView) {
         final CommandExecuter commandExecuter = new CommandExecuter();
         commandExecuter.registerCommand(new GetBatteryStatusCommand());
         commandExecuter.registerCommand(new GetBatteryLevelCommand());
@@ -96,6 +104,9 @@ public class DeviceListener {
         commandExecuter.registerCommand(new GetSmsListCommand());
         commandExecuter.registerCommand(new DialNumberCommand());
         commandExecuter.registerCommand(new EndCallCommand());
+        commandExecuter.registerCommand(new AcceptCallCommand());
+        commandExecuter.registerCommand(new GetPermissionInfoCommand());
+        commandExecuter.registerCommand(new RequestPermissionCommand());
 
         webView.addJavascriptInterface(new JsNativeBridge.ClientCommandCallLIstener(){
             @JavascriptInterface
@@ -106,9 +117,5 @@ public class DeviceListener {
         },"__host__");
     }
 
-    public void activate(Activity activity, WebView webView) {
-        setUpListeners(activity,webView);
-        setUpBridge(activity,webView);
-    }
 
 }

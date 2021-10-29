@@ -1,5 +1,4 @@
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
-import {Phone, MissedCallsStorage} from "../components/phone";
 import {NativeBridge} from "../nativeBridge";
 import {Home} from "../components/home";
 import {Router} from "../router/router";
@@ -32,7 +31,7 @@ const navigateToHome = ()=>{
 export const PhoneBookPage = ()=>{
     return (
         <>
-            <h3>Телефонна книга</h3>
+            <h3>Телефонная книга</h3>
             <div className="list">
                 <ul>
                     {

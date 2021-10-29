@@ -15,18 +15,15 @@ import {PhoneBookPage, PhoneBookStore} from "./pages/phoneBookPage";
 import {SmsStorage} from "./components/sms";
 import {SmsListPage, SmsListStore} from "./pages/SmsListPage";
 import {ActiveCallPage, ActiveCallStorage} from "./pages/activeCallPage";
+import {IGrantedPermissionInfo, SettingsPage, SettingsStorage} from "./pages/settingsPage";
 
 
 (window as any).__cb__ = (event:{eventId:string,payload:any})=>{
     NativeBridge.onEventReceivedFromHost(event);
 }
 
-// NativeBridge.subscribeToEvent('onResume',()=>{
-//     Router.navigateTo('home');
-// },false);
-
 interface ICallStateChangedIfo {
-    phoneCallState:'MISSED'|'FINISHED'|'STARTED',
+    phoneCallState:'MISSED'|'FINISHED'|'STARTED'|'RINGING',
     phoneNumber: string,
     address: string
 }
@@ -36,19 +33,38 @@ NativeBridge.subscribeToEvent('onCallStateChanged', ({phoneCallState,phoneNumber
     switch (phoneCallState) {
         case 'MISSED': {
             MissedCallsStorage.missedCallsNumber++;
+            Router.navigateTo('home');
             MissedCallsStorage.onChanged();
             break;
         }
         case 'FINISHED':
             Router.navigateTo('home');
             break;
+        case 'RINGING':
         case 'STARTED':
             ActiveCallStorage.phoneNumber = phoneNumber;
             ActiveCallStorage.address = address;
+            ActiveCallStorage.phoneCallState = phoneCallState;
             Router.navigateTo('activeCall');
             break;
     }
 }, false);
+
+NativeBridge.subscribeToEvent('onPermissionGranted', async () => {
+    await requestPermissionsInfo();
+}, false);
+
+
+const requestPermissionsInfo = async ()=>{
+    const permissions = await NativeBridge.callHostCommand<IGrantedPermissionInfo[]>('getPermissionsInfo');
+    SettingsStorage.permissionsInfo = permissions;
+    SettingsStorage.onChanged();
+    const hasNotGranted = permissions.filter(it=>!it.granted).length>0;
+    if (hasNotGranted) Router.navigateTo('settings');
+    else Router.navigateTo('home');
+}
+
+requestPermissionsInfo().catch(e=>console.log(e));
 
 
 export class App extends VEngineTsxComponent {
@@ -62,6 +78,7 @@ export class App extends VEngineTsxComponent {
         SmsListStore.onChanged          =
         ActiveCallStorage.onChanged     =
         MissedCallsStorage.onChanged    =
+        SettingsStorage.onChanged       =
             ()=>this.triggerRendering();
 
         Router.onNavigated(()=>this.triggerRendering());
@@ -89,6 +106,7 @@ export class App extends VEngineTsxComponent {
                             <Battery/>
                         </div>
                     </div>
+                    {Router.getCurrentUrl()==='settings' && <SettingsPage/>}
                     {Router.getCurrentUrl()==='home' && <HomePage/>}
                     {Router.getCurrentUrl()==='missedCalls' && <MissedCallsPage/>}
                     {Router.getCurrentUrl()==='phoneBook' && <PhoneBookPage/>}

@@ -6,7 +6,7 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.webkit.WebView;
 
-import com.victor.service.bridge.commands.Command;
+import com.victor.service.bridge.commands.base.Command;
 import com.victor.service.bridge.commands.DeviceCommand;
 
 public class GetBatteryStatusCommand extends Command {
@@ -17,7 +17,7 @@ public class GetBatteryStatusCommand extends Command {
     }
 
     @Override
-    public void execute(final String commandId,  String jsonParams, Activity activity, final WebView webView) {
+    protected Object execute(final String commandId,  String jsonParams, Activity activity, final WebView webView) {
 
         boolean isCharging = false;
         IntentFilter iFilter = new IntentFilter();
@@ -29,6 +29,6 @@ public class GetBatteryStatusCommand extends Command {
                     status == BatteryManager.BATTERY_STATUS_CHARGING ||
                     status == BatteryManager.BATTERY_STATUS_FULL;
         }
-        sendPayloadToClient(commandId, activity, webView, isCharging);
+        return isCharging;
     }
 }
