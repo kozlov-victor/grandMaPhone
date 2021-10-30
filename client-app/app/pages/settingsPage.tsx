@@ -19,12 +19,13 @@ const requestPermission = async (permission:string)=> {
 export const SettingsPage = ()=>{
     return (
         <>
+            <h3>Активируйте доступ к функциям</h3>
             <div className="list">
                 <ul>
                     {
                         SettingsStorage.permissionsInfo.map(it=>
                             <li onclick={e=>!it.granted && requestPermission(it.permission)}
-                                style={{backgroundColor:it.granted?'green':'red'}}>
+                                style={{backgroundColor:it.granted?'#deffde':'#ffc9c9'}}>
                                 {it.permission}
                             </li>
                         )

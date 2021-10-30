@@ -93,6 +93,17 @@ public class KioskService {
     public KioskService(Activity activity) {
         if (HARD_KIOSK) {
 
+            // show on lock screen
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+//                activity.setShowWhenLocked(true);
+//                activity.setTurnScreenOn(true);
+//            } else {
+//                activity.getWindow().addFlags(
+//                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+//                                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+//                );
+//            }
+
             //Remove title bar
             activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
             //Remove notification bar

@@ -2,9 +2,11 @@ package com.victor;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -15,9 +17,6 @@ import com.victor.service.bridge.JsNativeBridge;
 import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.kiosk.KioskService;
 import com.victor.service.provider.PermissionsProvider;
-
-import java.text.ParseException;
-import java.util.Arrays;
 
 public class MainActivity extends Activity {
 
@@ -62,7 +61,6 @@ public class MainActivity extends Activity {
         super.onPause();
         kioskService.bringToFront(this);
     }
-
 
     @Override
     protected void onResume() {
