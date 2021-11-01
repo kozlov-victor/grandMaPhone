@@ -67,6 +67,7 @@ public class MainActivity extends Activity {
         super.onResume();
         if (webView==null) return;
         kioskService.bringToFront(this);
+        JsNativeBridge.sendToWebClient(webView, DeviceCommand.onResume.name(),null);
     }
 
     @Override

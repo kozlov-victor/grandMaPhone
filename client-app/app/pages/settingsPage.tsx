@@ -10,6 +10,12 @@ export const SettingsStorage = {
     permissionsInfo: [] as IGrantedPermissionInfo[],
     onChanged: () => {
     },
+    allPermissionsAreGranted:():boolean=>{
+        for (const p of SettingsStorage.permissionsInfo) {
+            if (!p.granted) return false;
+        }
+        return true;
+    }
 }
 
 const requestPermission = async (permission:string)=> {

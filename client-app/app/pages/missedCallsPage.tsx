@@ -1,9 +1,10 @@
 import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactory.h";
-import {Phone, MissedCallsStorage} from "../components/phone";
+import {StatelessPhone} from "../components/phone";
 import {NativeBridge} from "../nativeBridge";
 import {Home} from "../components/home";
 import {Router} from "../router/router";
 import {formatDate} from "../utils/timeUtil";
+import {DialNumberStorage} from "./dialNumberPage";
 
 interface IMissedCall {
     nameFromPhoneBook?: string;
@@ -28,6 +29,11 @@ export const MissedCallsStore = {
 
 const navigateToHome = ()=>{
     Router.navigateTo('home');
+}
+
+const navigateToDialNumber = ()=>{
+    DialNumberStorage.number = '';
+    Router.navigateTo('dialNumber');
 }
 
 export const MissedCallsPage = ()=>{
@@ -62,8 +68,8 @@ export const MissedCallsPage = ()=>{
                 <div className="flex1" style={{textAlign: 'center'}} onclick={navigateToHome}>
                     <Home height={100}/>
                 </div>
-                <div className="flex1" style={{textAlign: 'center'}}>
-                    <Phone height={100}/>
+                <div className="flex1" style={{textAlign: 'center'}} onclick={navigateToDialNumber}>
+                    <StatelessPhone height={100}/>
                 </div>
             </div>
         </>

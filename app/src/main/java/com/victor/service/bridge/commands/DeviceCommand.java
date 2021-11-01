@@ -6,6 +6,7 @@ public enum DeviceCommand {
     onBatteryValueChanged,
     onBatteryStatusChanged,
     onPermissionGranted,
+    onResume,
 
     getPermissionsInfo,
     getBatteryStatus,

@@ -7,14 +7,14 @@ export const MissedCallsStorage = {
 }
 
 
-const getFillColor = ()=>{
-    if (MissedCallsStorage.missedCallsNumber>0) return '#d70000';
+const getFillColor = (stateless:boolean = false)=>{
+    if (!stateless && MissedCallsStorage.missedCallsNumber>0) return '#d70000';
     else return '#007000';
 }
 
-export const Phone = (props:{height?:number} = {}) => {
+const _Phone = (props:{height?:number,stateless?: boolean} = {}) => {
     props.height??=180;
-    const fillColor = getFillColor();
+    const fillColor = getFillColor(props.stateless);
     return (
         <div style={{display:'inlineBlock',position:'relative'}}>
             <svg height={`${props.height}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60.94 58.94"><title>phone</title>
@@ -33,9 +33,23 @@ export const Phone = (props:{height?:number} = {}) => {
                     transform="translate(0.5 -0.5)" style={`fill:${fillColor};stroke:#000;stroke-miterlimit:10`}/>
             </svg>
             {
+                !props.stateless &&
                 MissedCallsStorage.missedCallsNumber>0 &&
                 <div className="badge" style={{bottom:'10px',right:'20px'}}>{MissedCallsStorage.missedCallsNumber}</div>
             }
         </div>
+    );
+}
+
+export const Phone = (props:{height?:number} = {}) => {
+    return (
+        <_Phone height={props.height} stateless={false}/>
+    );
+}
+
+export const StatelessPhone = (props:{height?:number} = {}) => {
+    props.height??=180;
+    return (
+        <_Phone height={props.height} stateless={true}/>
     );
 }

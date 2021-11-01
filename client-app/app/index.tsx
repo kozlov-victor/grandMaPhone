@@ -16,6 +16,7 @@ import {SmsStorage} from "./components/sms";
 import {SmsListPage, SmsListStore} from "./pages/SmsListPage";
 import {ActiveCallPage, ActiveCallStorage} from "./pages/activeCallPage";
 import {IGrantedPermissionInfo, SettingsPage, SettingsStorage} from "./pages/settingsPage";
+import {DialNumberPage, DialNumberStorage} from "./pages/dialNumberPage";
 
 
 (window as any).__cb__ = (event:{eventId:string,payload:any})=>{
@@ -27,6 +28,11 @@ interface ICallStateChangedIfo {
     phoneNumber: string,
     address: string
 }
+
+NativeBridge.subscribeToEvent('onResume', async () => {
+    BatteryStorage.chargeValue = await NativeBridge.callHostCommand('getBatteryLevel');
+    BatteryStorage.onChanged();
+});
 
 NativeBridge.subscribeToEvent('onCallStateChanged', ({phoneCallState,phoneNumber,address}:ICallStateChangedIfo) => {
     console.log('phoneCallState ' + phoneCallState);
@@ -79,6 +85,7 @@ export class App extends VEngineTsxComponent {
         ActiveCallStorage.onChanged     =
         MissedCallsStorage.onChanged    =
         SettingsStorage.onChanged       =
+        DialNumberStorage.onChanged     =
             ()=>this.triggerRendering();
 
         Router.onNavigated(()=>this.triggerRendering());
@@ -112,6 +119,7 @@ export class App extends VEngineTsxComponent {
                     {Router.getCurrentUrl()==='phoneBook' && <PhoneBookPage/>}
                     {Router.getCurrentUrl()==='smsList' && <SmsListPage/>}
                     {Router.getCurrentUrl()==='activeCall' && <ActiveCallPage/>}
+                    {Router.getCurrentUrl()==='dialNumber' && <DialNumberPage/>}
                 </div>
             </>
         );
