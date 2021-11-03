@@ -19,6 +19,7 @@ import com.victor.service.bridge.commands.impl.GetContactListCommand;
 import com.victor.service.bridge.commands.impl.GetMissedCallsCommand;
 import com.victor.service.bridge.commands.impl.GetPermissionInfoCommand;
 import com.victor.service.bridge.commands.impl.GetSmsListCommand;
+import com.victor.service.bridge.commands.impl.QuitCommand;
 import com.victor.service.bridge.commands.impl.RequestPermissionCommand;
 import com.victor.service.listener.BatteryLevelListener;
 import com.victor.service.listener.BatteryStatusListener;
@@ -107,6 +108,7 @@ public class DeviceListener {
         commandExecuter.registerCommand(new AcceptCallCommand());
         commandExecuter.registerCommand(new GetPermissionInfoCommand());
         commandExecuter.registerCommand(new RequestPermissionCommand());
+        commandExecuter.registerCommand(new QuitCommand());
 
         webView.addJavascriptInterface(new JsNativeBridge.ClientCommandCallLIstener(){
             @JavascriptInterface

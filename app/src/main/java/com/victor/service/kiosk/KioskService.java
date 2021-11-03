@@ -18,8 +18,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.victor.service.listener.PhoneCallListener;
-
 public class KioskService {
 
     private static class CustomViewGroup extends ViewGroup {

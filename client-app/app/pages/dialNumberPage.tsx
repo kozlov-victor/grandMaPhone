@@ -4,6 +4,8 @@ import {StatelessPhone} from "../components/phone";
 import {Router} from "../router/router";
 import {NativeBridge} from "../nativeBridge";
 
+const SECRET_CODE_TO_EXIT = '*#000111222333#';
+
 const navigateToHome = ()=>{
     Router.navigateTo('home');
 }
@@ -16,7 +18,11 @@ export const DialNumberStorage = {
 
 const dialNumber = async ()=>{
     if (!DialNumberStorage.number) return;
-    await NativeBridge.callHostCommand('dialNumber',{number:DialNumberStorage.number});
+    if (DialNumberStorage.number===SECRET_CODE_TO_EXIT) {
+        await NativeBridge.callHostCommand('quit');
+    } else {
+        await NativeBridge.callHostCommand('dialNumber',{number:DialNumberStorage.number});
+    }
 }
 
 const onButtonPress = (char:string)=>{
