@@ -1,4 +1,5 @@
 
+
 export namespace NativeBridge {
 
     const callBacks:Record<string, {cb:(payload:any)=>void, once:boolean}> = {};
@@ -15,7 +16,7 @@ export namespace NativeBridge {
             callBacks[eventId].cb(payload);
             if (callBacks[eventId].once) delete callBacks[eventId];
         } else {
-            console.log(`unknown host event`);
+            console.log(`unknown host event: ${eventId}`);
         }
     }
 

@@ -4,9 +4,9 @@ import {StatelessPhone} from "../components/phone";
 import {Router} from "../router/router";
 import {NativeBridge} from "../nativeBridge";
 
-const SECRET_CODE_TO_EXIT = '*#000111222333#';
+const SECRET_CODE_TO_EXIT = '*#0123#';
 
-const navigateToHome = ()=>{
+const navigateToHome = ()=> {
     Router.navigateTo('home');
 }
 

@@ -73,6 +73,8 @@ const requestPermissionsInfo = async ()=>{
 requestPermissionsInfo().catch(e=>console.log(e));
 
 
+const id = new Date().getTime() + '_' + location.search;
+
 export class App extends VEngineTsxComponent {
 
     constructor() {
@@ -107,7 +109,7 @@ export class App extends VEngineTsxComponent {
                 <div className='verticalLayout alignItemsCenter'>
                     <div className='horizontalLayout' style={{padding: '10px', alignItems: 'center'}}>
                         <div className='flex1'>
-                            <Clock/>
+                            <div style={{position:'absolute',top:'65px'}}>{id}</div><Clock/>
                         </div>
                         <div>
                             <Battery/>

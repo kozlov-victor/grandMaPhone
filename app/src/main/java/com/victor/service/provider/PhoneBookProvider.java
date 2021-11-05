@@ -30,7 +30,7 @@ public class PhoneBookProvider {
     }
 
     public @Nullable String getContactNameByPhoneNumber(Activity activity, String phoneNumber) {
-
+        if (phoneNumber==null) return "";
         if (phoneNumber.equals("")) return "";
         if (nameByNumberCache.containsKey(phoneNumber)) return nameByNumberCache.get(phoneNumber);
 
@@ -39,21 +39,26 @@ public class PhoneBookProvider {
             return phoneNumber;
         }
 
-        ContentResolver cr = activity.getContentResolver();
-        Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
-        Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
-        if (cursor == null) {
-            return null;
+        try {
+            ContentResolver cr = activity.getContentResolver();
+            Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+            Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+            if (cursor == null) {
+                return null;
+            }
+            String contactName = null;
+            if(cursor.moveToFirst()) {
+                contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+            }
+            if(!cursor.isClosed()) {
+                cursor.close();
+            }
+            nameByNumberCache.put(phoneNumber,contactName);
+            return contactName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
         }
-        String contactName = null;
-        if(cursor.moveToFirst()) {
-            contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
-        }
-        if(!cursor.isClosed()) {
-            cursor.close();
-        }
-        nameByNumberCache.put(phoneNumber,contactName);
-        return contactName;
     }
 
     public List<PhoneBookRecord> getContactList(Activity activity) {

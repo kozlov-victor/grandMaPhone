@@ -35,6 +35,7 @@ public class PermissionsProvider {
 
                 // make call
                 Manifest.permission.CALL_PHONE
+
             )
         );
 
