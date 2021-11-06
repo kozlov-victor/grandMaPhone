@@ -36,4 +36,8 @@ public class BatteryLevelListener extends BroadcastReceiver {
         activity.registerReceiver(this, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
+    public void unregister(Activity activity) {
+        activity.unregisterReceiver(this);
+    }
+
 }

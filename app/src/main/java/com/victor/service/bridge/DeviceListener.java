@@ -13,8 +13,8 @@ import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.bridge.commands.impl.AcceptCallCommand;
 import com.victor.service.bridge.commands.impl.DialNumberCommand;
 import com.victor.service.bridge.commands.impl.EndCallCommand;
-import com.victor.service.bridge.commands.impl.GetBatteryStatusCommand;
 import com.victor.service.bridge.commands.impl.GetBatteryLevelCommand;
+import com.victor.service.bridge.commands.impl.GetBatteryStatusCommand;
 import com.victor.service.bridge.commands.impl.GetContactListCommand;
 import com.victor.service.bridge.commands.impl.GetMissedCallsCommand;
 import com.victor.service.bridge.commands.impl.GetPermissionInfoCommand;
@@ -34,8 +34,13 @@ public class DeviceListener {
 
     private static boolean isListenedToServices = false;
 
+    private static PhoneCallListener callListener;
+    private static SMSReceivedListener smsReceivedListener;
+    private static BatteryLevelListener batteryLevelListener;
+    private static BatteryStatusListener batteryStatusListener;
+
     private void listenToCallState(final Activity activity, final WebView webView) {
-        PhoneCallListener callListener = PhoneCallListener.getInstance(activity);
+        callListener = PhoneCallListener.getInstance(activity);
         callListener.register(activity);
         callListener.setListener(new PhoneCallListener.OnCallStateChangedCallBack() {
             @Override
@@ -51,7 +56,7 @@ public class DeviceListener {
 
 
     private void listenToSmsReceived(Activity activity, final WebView webView) {
-        SMSReceivedListener smsReceivedListener = new SMSReceivedListener();
+        smsReceivedListener = new SMSReceivedListener();
         smsReceivedListener.register(activity);
         smsReceivedListener.addSMSListner(new SMSReceivedListener.SMSReceivedListner() {
             @Override
@@ -62,7 +67,7 @@ public class DeviceListener {
     }
 
     private void listenToBatteryLevel(Activity activity, final WebView webView) {
-        BatteryLevelListener batteryLevelListener = new BatteryLevelListener();
+        batteryLevelListener = new BatteryLevelListener();
         batteryLevelListener.register(activity);
         batteryLevelListener.setListener(new BatteryLevelListener.BatteryLevelChangedCallBack() {
             @Override
@@ -75,7 +80,7 @@ public class DeviceListener {
     }
 
     private void listenToBatteryStatus(Activity activity, final WebView webView) {
-        BatteryStatusListener batteryStatusListener = new BatteryStatusListener();
+        batteryStatusListener = new BatteryStatusListener();
         batteryStatusListener.register(activity);
         batteryStatusListener.setListener(new BatteryStatusListener.BatteryStatusChangedCallBack() {
             @Override
@@ -117,6 +122,13 @@ public class DeviceListener {
                 commandExecuter.executeCommand(DeviceCommand.valueOf(commandName),eventId,jsonParams,activity,webView);
             }
         },"__host__");
+    }
+
+    public static void unRegisterListeners(Activity activity) {
+        callListener.unregister(activity);
+        smsReceivedListener.unregister(activity);
+        batteryLevelListener.unregister(activity);
+        batteryStatusListener.unregister(activity);
     }
 
 

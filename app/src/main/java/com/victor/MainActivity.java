@@ -36,6 +36,8 @@ public class MainActivity extends Activity {
     private DeviceListener deviceListener;
     private DeviceProvider deviceProvider;
 
+
+    private static MainActivity instance;
     private boolean created = false;
 
 
@@ -44,8 +46,15 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //if (created) return;
-        System.out.println("on created activity--------------------" + this);
+        if (created) return;;
+        created = true;
+
+        if (instance!=null) {
+            System.out.println("--------------------------instance not null---------------------------");
+            DeviceListener.unRegisterListeners(instance);
+            instance.finish();
+        }
+        instance = this;
 
         // enable kiosk
         kioskService = new KioskService(this);
@@ -73,7 +82,6 @@ public class MainActivity extends Activity {
         deviceProvider = new DeviceProvider();
         webView.loadUrl("file:///android_asset/index.html?and="+this.toString());
 
-        created = true;
 
     }
 
@@ -124,8 +132,8 @@ public class MainActivity extends Activity {
         switch( event.getKeyCode() ) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-            //case KeyEvent.KEYCODE_BACK:
-            //case KeyEvent.KEYCODE_HOME:
+            case KeyEvent.KEYCODE_BACK:
+            case KeyEvent.KEYCODE_HOME:
                 return true;
             default:
                 super.dispatchKeyEvent(event);
@@ -137,6 +145,7 @@ public class MainActivity extends Activity {
     public void onBackPressed() {
         if (!KioskService.HARD_KIOSK) super.onBackPressed();
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {

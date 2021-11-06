@@ -20,7 +20,7 @@ public class CallReceiver extends AbstractPhoneCallReceiver {
         Intent intent = new Intent();
         intent.setClass(ctx, MainActivity.class);
         intent.putExtra(PHONE_NUMBER,phoneNumber);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         ctx.startActivity(intent);
 
         try {
@@ -48,7 +48,7 @@ public class CallReceiver extends AbstractPhoneCallReceiver {
                 if (state == 1) {
                     Intent intentPhoneCall = new Intent(context, MainActivity.class);
                     intentPhoneCall.putExtra(PHONE_NUMBER, incomingNumber);
-                    intentPhoneCall.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intentPhoneCall.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     context.startActivity(intentPhoneCall);
                 }
             };

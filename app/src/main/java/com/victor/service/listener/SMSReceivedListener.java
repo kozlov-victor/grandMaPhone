@@ -39,18 +39,22 @@ public class SMSReceivedListener extends BroadcastReceiver {
         }
     }
 
-    public void addSMSListner(SMSReceivedListner listner){
-        smsListner.add(listner);
+    public void addSMSListner(SMSReceivedListner listener){
+        smsListner.add(listener);
     }
 
-    public void removeSMSListener(SMSReceivedListner listner){
-        smsListner.remove(listner);
+    public void removeSMSListener(SMSReceivedListner listener){
+        smsListner.remove(listener);
     }
 
     public void register(Activity activity) {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.provider.Telephony.SMS_RECEIVED");
         activity.registerReceiver(this,filter);
+    }
+
+    public void unregister(Activity activity) {
+        activity.unregisterReceiver(this);
     }
 
     public interface SMSReceivedListner{

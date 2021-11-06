@@ -39,6 +39,12 @@ public class PhoneCallListener extends PhoneStateListener {
             telephonyManager.listen(this, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
+    public void unregister(Activity activity) {
+        TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null)
+            telephonyManager.listen(this, PhoneStateListener.LISTEN_NONE);
+    }
+
     @Override
     public void onCallStateChanged(int state, String phoneNumber) {
 

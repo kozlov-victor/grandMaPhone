@@ -34,4 +34,8 @@ public class BatteryStatusListener extends BroadcastReceiver {
         activity.registerReceiver(this, btrIntentFilter);
     }
 
+    public void unregister(Activity activity) {
+        activity.unregisterReceiver(this);
+    }
+
 }
