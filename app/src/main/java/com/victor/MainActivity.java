@@ -2,10 +2,9 @@ package com.victor;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.ConsoleMessage;
@@ -17,14 +16,11 @@ import com.victor.model.PhoneCallStateInfo;
 import com.victor.service.bridge.DeviceListener;
 import com.victor.service.bridge.JsNativeBridge;
 import com.victor.service.bridge.commands.DeviceCommand;
+import com.victor.service.bridge.commands.impl.DialNumberCommand;
 import com.victor.service.kiosk.KioskService;
-import com.victor.service.listener.PhoneCallListener;
-import com.victor.service.provider.DeviceProvider;
 import com.victor.service.provider.PermissionsProvider;
 import com.victor.service.provider.PhoneBookProvider;
 import com.victor.service.receiver.CallReceiver;
-
-import java.util.Date;
 
 // додаткі і сповіщення - сповіщення - сповіщення додатка - телефон - відключити
 // додаткі і сповіщення - телефон - показувати поверх ынших додатків - відключити
@@ -32,9 +28,8 @@ import java.util.Date;
 public class MainActivity extends Activity {
 
     private KioskService kioskService;
-    private WebView webView;
+    private static WebView webView;
     private DeviceListener deviceListener;
-    private DeviceProvider deviceProvider;
 
 
     private static MainActivity instance;
@@ -50,7 +45,6 @@ public class MainActivity extends Activity {
         created = true;
 
         if (instance!=null) {
-            System.out.println("--------------------------instance not null---------------------------");
             DeviceListener.unRegisterListeners(instance);
             instance.finish();
         }
@@ -79,9 +73,7 @@ public class MainActivity extends Activity {
         if (PermissionsProvider.hasAllPermissions(this)) {
             deviceListener.setUpListenersOnce(this,webView);
         }
-        deviceProvider = new DeviceProvider();
         webView.loadUrl("file:///android_asset/index.html?and="+this.toString());
-
 
     }
 
@@ -92,14 +84,8 @@ public class MainActivity extends Activity {
         String phoneNumber = intent.getStringExtra(CallReceiver.PHONE_NUMBER);
         if (phoneNumber==null) return;
 
-        System.out.println("ongoing call!!!!!!!!!!!!!!!!!!!!!!!!!" + this);
-        System.out.println(intent);
-
-        deviceProvider.killNativePhoneProcess(this);
-        deviceProvider.turnOnScreen(this);
-
         PhoneCallStateInfo phoneCallStateInfo = new PhoneCallStateInfo();
-        phoneCallStateInfo.setPhoneCallState(PhoneCallListener.PhoneCallState.RINGING);
+        phoneCallStateInfo.setPhoneCallState(CallReceiver.PhoneCallState.RINGING);
         phoneCallStateInfo.setPhoneNumber(phoneNumber);
         phoneCallStateInfo.setAddress(PhoneBookProvider.getInstance().getContactNameByPhoneNumber(this,phoneNumber));
         JsNativeBridge.sendToWebClient(webView, DeviceCommand.onCallStateChanged.name(),phoneCallStateInfo);
@@ -108,7 +94,17 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        kioskService.bringToFront(this);
+        if (!CallReceiver.IS_CALLING) {
+            kioskService.bringToFront(this);
+        } else {
+            Handler callActionHandler = new Handler();
+            callActionHandler.postDelayed(() -> {
+                kioskService.bringToFront(MainActivity.this);
+                if (DialNumberCommand.LAST_DIAL_NUMBER!=null) {
+                    CallReceiver.onPhoneStateChanged(MainActivity.this, DialNumberCommand.LAST_DIAL_NUMBER, CallReceiver.PhoneCallState.STARTED);
+                }
+            },100);
+        }
     }
 
     @Override
@@ -154,6 +150,11 @@ public class MainActivity extends Activity {
         }
         JsNativeBridge.sendToWebClient(webView, DeviceCommand.onPermissionGranted.name(),null);
     }
+
+    public static WebView getWebView() {
+         return webView;
+    }
+
 
     private static class MyWebViewClient extends WebViewClient {
         @Override

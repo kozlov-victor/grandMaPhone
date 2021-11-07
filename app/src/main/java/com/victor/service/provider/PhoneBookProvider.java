@@ -3,6 +3,7 @@ package com.victor.service.provider;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -29,18 +30,18 @@ public class PhoneBookProvider {
         return instance;
     }
 
-    public @Nullable String getContactNameByPhoneNumber(Activity activity, String phoneNumber) {
+    public @Nullable String getContactNameByPhoneNumber(Context context, String phoneNumber) {
         if (phoneNumber==null) return "";
         if (phoneNumber.equals("")) return "";
         if (nameByNumberCache.containsKey(phoneNumber)) return nameByNumberCache.get(phoneNumber);
 
-        if (ContextCompat.checkSelfPermission(activity,
+        if (ContextCompat.checkSelfPermission(context,
                 Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             return phoneNumber;
         }
 
         try {
-            ContentResolver cr = activity.getContentResolver();
+            ContentResolver cr = context.getContentResolver();
             Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
             Cursor cursor = cr.query(uri, new String[]{ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
             if (cursor == null) {

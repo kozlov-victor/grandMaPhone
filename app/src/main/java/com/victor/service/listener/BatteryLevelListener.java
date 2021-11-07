@@ -37,7 +37,11 @@ public class BatteryLevelListener extends BroadcastReceiver {
     }
 
     public void unregister(Activity activity) {
-        activity.unregisterReceiver(this);
+        try {
+            activity.unregisterReceiver(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

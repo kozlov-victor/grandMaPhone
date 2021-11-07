@@ -24,7 +24,7 @@ public class AcceptCallCommand extends Command {
     @Override
     protected Object execute(String commandId, @Nullable String jsonParams, final Activity activity, WebView webView) {
 
-        TelecomManager tm = null;
+        TelecomManager tm;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tm = (TelecomManager) activity.getSystemService(Context.TELECOM_SERVICE);
             if (tm == null) {

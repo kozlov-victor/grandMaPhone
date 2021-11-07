@@ -7,16 +7,37 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
 import com.victor.MainActivity;
+import com.victor.model.PhoneCallStateInfo;
+import com.victor.service.bridge.JsNativeBridge;
+import com.victor.service.bridge.commands.DeviceCommand;
+import com.victor.service.bridge.commands.impl.DialNumberCommand;
+import com.victor.service.provider.DeviceProvider;
+import com.victor.service.provider.PhoneBookProvider;
 import com.victor.service.receiver.abstracts.AbstractPhoneCallReceiver;
-
-import java.util.Date;
 
 public class CallReceiver extends AbstractPhoneCallReceiver {
 
     public final static String PHONE_NUMBER = "app.phoneNumber";
 
+    public static boolean IS_CALLING = false;
+
+    private DeviceProvider deviceProvider = new DeviceProvider();
+
+    public static void onPhoneStateChanged(Context context, String phoneNumber, PhoneCallState phoneCallState) {
+        PhoneCallStateInfo phoneCallStateInfo = new PhoneCallStateInfo();
+        phoneCallStateInfo.setPhoneCallState(phoneCallState);
+        phoneCallStateInfo.setPhoneNumber(phoneNumber);
+        phoneCallStateInfo.setAddress(PhoneBookProvider.getInstance().getContactNameByPhoneNumber(context,phoneNumber));
+        JsNativeBridge.sendToWebClient(MainActivity.getWebView(), DeviceCommand.onCallStateChanged.name(),phoneCallStateInfo);
+    }
+
     @Override
-    protected void onIncomingCallStarted(Context ctx, String phoneNumber, Date start) {
+    protected void onRinging(Context ctx, String phoneNumber) {
+
+        deviceProvider.killNativePhoneProcess(ctx);
+        deviceProvider.turnOnScreen(ctx);
+        IS_CALLING = true;
+
         Intent intent = new Intent();
         intent.setClass(ctx, MainActivity.class);
         intent.putExtra(PHONE_NUMBER,phoneNumber);
@@ -31,6 +52,28 @@ public class CallReceiver extends AbstractPhoneCallReceiver {
         catch (Exception e) {
             e.printStackTrace();
         }
+        onPhoneStateChanged(ctx,phoneNumber, PhoneCallState.RINGING);
+    }
+
+    @Override
+    protected void onStarted(Context ctx, String number) {
+        onPhoneStateChanged(ctx,number, PhoneCallState.STARTED);
+        IS_CALLING = false;
+        DialNumberCommand.LAST_DIAL_NUMBER = null;
+    }
+
+    @Override
+    protected void onEnded(Context ctx, String number) {
+        onPhoneStateChanged(ctx,number, PhoneCallState.FINISHED);
+        IS_CALLING = false;
+        DialNumberCommand.LAST_DIAL_NUMBER = null;
+    }
+
+    @Override
+    protected void onMissed(Context ctx, String number) {
+        onPhoneStateChanged(ctx,number, PhoneCallState.MISSED);
+        IS_CALLING = false;
+        DialNumberCommand.LAST_DIAL_NUMBER = null;
     }
 
     private static class MyPhoneStateListener extends PhoneStateListener {
@@ -63,21 +106,11 @@ public class CallReceiver extends AbstractPhoneCallReceiver {
         }
     }
 
-    @Override
-    protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
-
-    }
-
-    @Override
-    protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
-    }
-
-    @Override
-    protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
-    }
-
-    @Override
-    protected void onMissedCall(Context ctx, String number, Date start) {
+    public enum PhoneCallState {
+        RINGING,
+        MISSED,
+        FINISHED,
+        STARTED
     }
 
 }

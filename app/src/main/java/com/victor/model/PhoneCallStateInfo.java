@@ -1,18 +1,18 @@
 package com.victor.model;
 
-import com.victor.service.listener.PhoneCallListener;
+import com.victor.service.receiver.CallReceiver;
 
 public class PhoneCallStateInfo {
 
-    private PhoneCallListener.PhoneCallState phoneCallState;
+    private CallReceiver.PhoneCallState phoneCallState;
     private String phoneNumber;
     private String address;
 
-    public PhoneCallListener.PhoneCallState getPhoneCallState() {
+    public CallReceiver.PhoneCallState getPhoneCallState() {
         return phoneCallState;
     }
 
-    public void setPhoneCallState(PhoneCallListener.PhoneCallState phoneCallState) {
+    public void setPhoneCallState(CallReceiver.PhoneCallState phoneCallState) {
         this.phoneCallState = phoneCallState;
     }
 

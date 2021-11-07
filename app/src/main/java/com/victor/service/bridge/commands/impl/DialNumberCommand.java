@@ -13,11 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.victor.model.DialNumber;
 import com.victor.service.bridge.commands.base.Command;
 import com.victor.service.bridge.commands.DeviceCommand;
-import com.victor.service.listener.PhoneCallListener;
+import com.victor.service.receiver.CallReceiver;
 
 import java.io.IOException;
 
 public class DialNumberCommand extends Command {
+
+    public static String LAST_DIAL_NUMBER;
 
     @Override
     public DeviceCommand getCommand() {
@@ -33,10 +35,12 @@ public class DialNumberCommand extends Command {
                     replace("(", "").replace(")", "").
                     replace(" ", "").replace("-", "");
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + numberCleared));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION);
             if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 return null;
             }
-            PhoneCallListener.getInstance(activity).setPhoneCalling(true);
+            CallReceiver.IS_CALLING = true;
+            DialNumberCommand.LAST_DIAL_NUMBER = numberCleared;
             activity.startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
