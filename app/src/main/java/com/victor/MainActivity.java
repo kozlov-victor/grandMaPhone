@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
                 if (DialNumberCommand.LAST_DIAL_NUMBER!=null) {
                     CallReceiver.onPhoneStateChanged(MainActivity.this, DialNumberCommand.LAST_DIAL_NUMBER, CallReceiver.PhoneCallState.STARTED);
                 }
-            },100);
+            },400);
         }
     }
 
