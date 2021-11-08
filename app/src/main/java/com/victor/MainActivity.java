@@ -31,24 +31,19 @@ public class MainActivity extends Activity {
     private static WebView webView;
     private DeviceListener deviceListener;
 
-
-    private static MainActivity instance;
     private boolean created = false;
-
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (created) return;;
+        if (created) return;
         created = true;
 
-        if (instance!=null) {
-            DeviceListener.unRegisterListeners(instance);
-            instance.finish();
+        if (deviceListener!=null) {
+            deviceListener.unregister(this);
         }
-        instance = this;
 
         // enable kiosk
         kioskService = new KioskService(this);
@@ -71,7 +66,7 @@ public class MainActivity extends Activity {
         deviceListener = new DeviceListener();
         deviceListener.setUpBridge(this,webView);
         if (PermissionsProvider.hasAllPermissions(this)) {
-            deviceListener.setUpListenersOnce(this,webView);
+            deviceListener.register(this);
         }
         webView.loadUrl("file:///android_asset/index.html?and="+this.toString());
 
@@ -146,7 +141,7 @@ public class MainActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (PermissionsProvider.hasAllPermissions(this)) {
-            deviceListener.setUpListenersOnce(this,webView);
+            deviceListener.register(this);
         }
         JsNativeBridge.sendToWebClient(webView, DeviceCommand.onPermissionGranted.name(),null);
     }

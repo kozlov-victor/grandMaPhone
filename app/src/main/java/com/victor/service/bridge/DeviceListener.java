@@ -6,6 +6,7 @@ import android.webkit.WebView;
 
 import androidx.annotation.Nullable;
 
+import com.victor.MainActivity;
 import com.victor.service.bridge.commands.CommandExecuter;
 import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.bridge.commands.impl.AcceptCallCommand;
@@ -21,52 +22,41 @@ import com.victor.service.bridge.commands.impl.QuitCommand;
 import com.victor.service.bridge.commands.impl.RequestPermissionCommand;
 import com.victor.service.listener.BatteryLevelListener;
 import com.victor.service.listener.BatteryStatusListener;
-import com.victor.service.listener.SMSReceivedListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DeviceListener {
 
-    private static boolean isListenedToServices = false;
 
-    private static SMSReceivedListener smsReceivedListener;
-    private static BatteryLevelListener batteryLevelListener;
-    private static BatteryStatusListener batteryStatusListener;
+    private BatteryLevelListener batteryLevelListener;
+    private BatteryStatusListener batteryStatusListener;
 
 
-    private void listenToSmsReceived(Activity activity, final WebView webView) {
-        smsReceivedListener = new SMSReceivedListener();
-        smsReceivedListener.register(activity);
-        smsReceivedListener.addSMSListner(message -> JsNativeBridge.sendToWebClient(webView, DeviceCommand.onSmsReceived.name(),null));
-    }
 
-    private void listenToBatteryLevel(Activity activity, final WebView webView) {
+    private void listenToBatteryLevel(Activity activity) {
         batteryLevelListener = new BatteryLevelListener();
         batteryLevelListener.register(activity);
         batteryLevelListener.setListener(value -> {
             Map<String,Object> map = new HashMap<>();
             map.put("value",value);
-            JsNativeBridge.sendToWebClient(webView, DeviceCommand.onBatteryValueChanged.name(),map);
+            JsNativeBridge.sendToWebClient(MainActivity.getWebView(), DeviceCommand.onBatteryValueChanged.name(),map);
         });
     }
 
-    private void listenToBatteryStatus(Activity activity, final WebView webView) {
+    private void listenToBatteryStatus(Activity activity) {
         batteryStatusListener = new BatteryStatusListener();
         batteryStatusListener.register(activity);
         batteryStatusListener.setListener(isCharging -> {
             Map<String,Object> map = new HashMap<>();
             map.put("isCharging",isCharging);
-            JsNativeBridge.sendToWebClient(webView, DeviceCommand.onBatteryStatusChanged.name(),map);
+            JsNativeBridge.sendToWebClient(MainActivity.getWebView(), DeviceCommand.onBatteryStatusChanged.name(),map);
         });
     }
 
-    public void setUpListenersOnce(Activity activity, WebView webView) {
-        if (isListenedToServices) return;
-        isListenedToServices = true;
-        listenToSmsReceived(activity,webView);
-        listenToBatteryLevel(activity, webView);
-        listenToBatteryStatus(activity, webView);
+    public void register(Activity activity) {
+        listenToBatteryLevel(activity);
+        listenToBatteryStatus(activity);
     }
 
     public void setUpBridge(final Activity activity, final WebView webView) {
@@ -92,8 +82,7 @@ public class DeviceListener {
         },"__host__");
     }
 
-    public static void unRegisterListeners(Activity activity) {
-        smsReceivedListener.unregister(activity);
+    public void unregister(Activity activity) {
         batteryLevelListener.unregister(activity);
         batteryStatusListener.unregister(activity);
     }

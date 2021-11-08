@@ -80,7 +80,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".service.listener.SMSReceivedListener"
+        <receiver android:name=".service.receiver.SmsReceiver"
             android:enabled="true"
             android:permission="android.permission.BROADCAST_SMS"
             android:exported="true">
