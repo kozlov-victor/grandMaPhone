@@ -31,28 +31,31 @@ public class CallReceiver extends AbstractPhoneCallReceiver {
         JsNativeBridge.sendToWebClient(MainActivity.getWebView(), DeviceCommand.onCallStateChanged.name(),phoneCallStateInfo);
     }
 
-    @Override
-    protected void onRinging(Context ctx, String phoneNumber) {
-
-        deviceProvider.killNativePhoneProcess(ctx);
-        deviceProvider.turnOnScreen(ctx);
-        IS_CALLING = true;
-
+    private static void showScreen(Context context,String phoneNumber) {
         Intent intent = new Intent();
-        intent.setClass(ctx, MainActivity.class);
+        intent.setClass(context, MainActivity.class);
         intent.putExtra(PHONE_NUMBER,phoneNumber);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        ctx.startActivity(intent);
+        context.startActivity(intent);
+    }
+
+    @Override
+    protected void onRinging(Context context, String phoneNumber) {
+
+        deviceProvider.killNativePhoneProcess(context);
+        deviceProvider.turnOnScreen(context);
+        IS_CALLING = true;
+        showScreen(context,phoneNumber);
 
         try {
-            TelephonyManager tmgr = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
-            MyPhoneStateListener PhoneListener = new MyPhoneStateListener(ctx);
+            TelephonyManager tmgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            MyPhoneStateListener PhoneListener = new MyPhoneStateListener(context);
             if (tmgr!=null) tmgr.listen(PhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        onPhoneStateChanged(ctx,phoneNumber, PhoneCallState.RINGING);
+        onPhoneStateChanged(context,phoneNumber, PhoneCallState.RINGING);
     }
 
     @Override
@@ -89,10 +92,7 @@ public class CallReceiver extends AbstractPhoneCallReceiver {
             Handler callActionHandler = new Handler();
             Runnable runRingingActivity = () -> {
                 if (state == 1) {
-                    Intent intentPhoneCall = new Intent(context, MainActivity.class);
-                    intentPhoneCall.putExtra(PHONE_NUMBER, incomingNumber);
-                    intentPhoneCall.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    context.startActivity(intentPhoneCall);
+                    showScreen(context,incomingNumber);
                 }
             };
 

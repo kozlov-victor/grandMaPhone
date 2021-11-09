@@ -29,27 +29,20 @@ public class MainActivity extends Activity {
 
     private KioskService kioskService;
     private static WebView webView;
+    private static MainActivity mainActivity;
     private DeviceListener deviceListener;
-
-    private boolean created = false;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (created) return;
-        created = true;
-
-        if (deviceListener!=null) {
-            deviceListener.unregister(this);
-        }
-
         // enable kiosk
         kioskService = new KioskService(this);
 
         setContentView(R.layout.activity_main);
         webView = this.findViewById(R.id.main_screen);
+        mainActivity = this;
 
         WebChromeClient chromeClient = new MyChromeClient();
         webView.setWebChromeClient(chromeClient);
@@ -78,11 +71,13 @@ public class MainActivity extends Activity {
         if (intent==null) return;
         String phoneNumber = intent.getStringExtra(CallReceiver.PHONE_NUMBER);
         if (phoneNumber==null) return;
+        if (!CallReceiver.IS_CALLING) return;
 
         PhoneCallStateInfo phoneCallStateInfo = new PhoneCallStateInfo();
         phoneCallStateInfo.setPhoneCallState(CallReceiver.PhoneCallState.RINGING);
         phoneCallStateInfo.setPhoneNumber(phoneNumber);
         phoneCallStateInfo.setAddress(PhoneBookProvider.getInstance().getContactNameByPhoneNumber(this,phoneNumber));
+        System.out.println("ringing-----------------------" + this);
         JsNativeBridge.sendToWebClient(webView, DeviceCommand.onCallStateChanged.name(),phoneCallStateInfo);
     }
 
@@ -108,6 +103,7 @@ public class MainActivity extends Activity {
         if (webView==null) return;
         kioskService.bringToFront(this);
         JsNativeBridge.sendToWebClient(webView, DeviceCommand.onResume.name(),null);
+        System.out.println("onresume-----------------------" + this);
     }
 
     @Override
@@ -150,6 +146,9 @@ public class MainActivity extends Activity {
          return webView;
     }
 
+    public static MainActivity getActivity() {
+        return mainActivity;
+    }
 
     private static class MyWebViewClient extends WebViewClient {
         @Override
