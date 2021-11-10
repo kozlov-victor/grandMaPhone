@@ -29,7 +29,6 @@ public class MainActivity extends Activity {
 
     private KioskService kioskService;
     private static WebView webView;
-    private static MainActivity mainActivity;
     private DeviceListener deviceListener;
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -42,7 +41,6 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
         webView = this.findViewById(R.id.main_screen);
-        mainActivity = this;
 
         WebChromeClient chromeClient = new MyChromeClient();
         webView.setWebChromeClient(chromeClient);
@@ -146,9 +144,6 @@ public class MainActivity extends Activity {
          return webView;
     }
 
-    public static MainActivity getActivity() {
-        return mainActivity;
-    }
 
     private static class MyWebViewClient extends WebViewClient {
         @Override

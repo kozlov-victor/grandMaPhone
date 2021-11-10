@@ -35,7 +35,7 @@ public class CallReceiver extends AbstractPhoneCallReceiver {
         Intent intent = new Intent();
         intent.setClass(context, MainActivity.class);
         intent.putExtra(PHONE_NUMBER,phoneNumber);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         context.startActivity(intent);
     }
 
