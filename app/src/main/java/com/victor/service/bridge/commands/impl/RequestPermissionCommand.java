@@ -1,6 +1,5 @@
 package com.victor.service.bridge.commands.impl;
 
-import android.Manifest;
 import android.app.Activity;
 import android.webkit.WebView;
 
@@ -8,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.victor.model.DialNumber;
 import com.victor.model.RequestedPermission;
 import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.bridge.commands.base.Command;

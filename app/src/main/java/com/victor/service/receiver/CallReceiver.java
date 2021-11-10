@@ -6,7 +6,6 @@ import com.victor.MainActivity;
 import com.victor.model.PhoneCallStateInfo;
 import com.victor.service.bridge.JsNativeBridge;
 import com.victor.service.bridge.commands.DeviceCommand;
-import com.victor.service.bridge.commands.impl.DialNumberCommand;
 import com.victor.service.provider.PhoneBookProvider;
 import com.victor.service.receiver.abstracts.AbstractPhoneCallReceiver;
 
@@ -36,14 +35,12 @@ public class CallReceiver extends AbstractPhoneCallReceiver {
     protected void onEnded(Context ctx, String number) {
         onPhoneStateChanged(ctx,number, PhoneCallState.FINISHED);
         IS_CALLING = false;
-        DialNumberCommand.LAST_DIAL_NUMBER = null;
     }
 
     @Override
     protected void onMissed(Context ctx, String number) {
         onPhoneStateChanged(ctx,number, PhoneCallState.MISSED);
         IS_CALLING = false;
-        DialNumberCommand.LAST_DIAL_NUMBER = null;
     }
 
     public enum PhoneCallState {

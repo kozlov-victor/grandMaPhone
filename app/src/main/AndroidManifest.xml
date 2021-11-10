@@ -34,7 +34,6 @@
         android:persistent="true"
         android:screenOrientation="landscape"
         android:stateNotNeeded="true"
-
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         <activity android:name=".MainActivity"
             android:clearTaskOnLaunch="true"

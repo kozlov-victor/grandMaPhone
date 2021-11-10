@@ -19,7 +19,6 @@ import java.io.IOException;
 
 public class DialNumberCommand extends Command {
 
-    public static String LAST_DIAL_NUMBER;
 
     @Override
     public DeviceCommand getCommand() {
@@ -40,7 +39,6 @@ public class DialNumberCommand extends Command {
                 return null;
             }
             CallReceiver.IS_CALLING = true;
-            DialNumberCommand.LAST_DIAL_NUMBER = numberCleared;
             activity.startActivity(intent);
         } catch (IOException e) {
             e.printStackTrace();
