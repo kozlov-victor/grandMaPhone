@@ -63,35 +63,12 @@ public class MainActivity extends Activity {
 
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-
-        if (intent==null) return;
-        String phoneNumber = intent.getStringExtra(CallReceiver.PHONE_NUMBER);
-        if (phoneNumber==null) return;
-        if (!CallReceiver.IS_CALLING) return;
-
-        PhoneCallStateInfo phoneCallStateInfo = new PhoneCallStateInfo();
-        phoneCallStateInfo.setPhoneCallState(CallReceiver.PhoneCallState.RINGING);
-        phoneCallStateInfo.setPhoneNumber(phoneNumber);
-        phoneCallStateInfo.setAddress(PhoneBookProvider.getInstance().getContactNameByPhoneNumber(this,phoneNumber));
-        System.out.println("ringing-----------------------" + this);
-        JsNativeBridge.sendToWebClient(webView, DeviceCommand.onCallStateChanged.name(),phoneCallStateInfo);
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (!CallReceiver.IS_CALLING) {
             kioskService.bringToFront(this);
-        } else {
-            Handler callActionHandler = new Handler();
-            callActionHandler.postDelayed(() -> {
-                kioskService.bringToFront(MainActivity.this);
-                if (DialNumberCommand.LAST_DIAL_NUMBER!=null) {
-                    CallReceiver.onPhoneStateChanged(MainActivity.this, DialNumberCommand.LAST_DIAL_NUMBER, CallReceiver.PhoneCallState.STARTED);
-                }
-            },400);
         }
     }
 
@@ -101,7 +78,6 @@ public class MainActivity extends Activity {
         if (webView==null) return;
         kioskService.bringToFront(this);
         JsNativeBridge.sendToWebClient(webView, DeviceCommand.onResume.name(),null);
-        System.out.println("onresume-----------------------" + this);
     }
 
     @Override
