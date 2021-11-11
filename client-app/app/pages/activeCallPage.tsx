@@ -3,7 +3,7 @@ import {NativeBridge} from "../nativeBridge";
 import {Router} from "../router/router";
 
 export const ActiveCallStorage = {
-    phoneNumber: '98098098098',
+    phoneNumber: '042',
     address: 'test test',
     phoneCallState: '' as 'MISSED'|'FINISHED'|'STARTED'|'RINGING'|'',
     onChanged: () => {
@@ -12,6 +12,8 @@ export const ActiveCallStorage = {
 
 const acceptCall = async () => {
     await NativeBridge.callHostCommand<void>('acceptCall');
+    ActiveCallStorage.phoneCallState = 'STARTED';
+    ActiveCallStorage.onChanged();
 }
 
 const endCall = async () => {

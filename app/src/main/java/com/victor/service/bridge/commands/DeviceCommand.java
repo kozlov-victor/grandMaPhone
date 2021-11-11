@@ -14,6 +14,7 @@ public enum DeviceCommand {
     getMissedCalls,
     getContactList,
     getSmsList,
+    getSimOperatorInfo,
 
     dialNumber,
     endCall,

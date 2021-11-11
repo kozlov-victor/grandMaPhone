@@ -38,10 +38,6 @@ public class PermissionsProvider {
 
             )
         );
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            PERMISSIONS.add(Manifest.permission.ANSWER_PHONE_CALLS);
-        }
     }
 
     public List<String> getAllAppPermissions() {

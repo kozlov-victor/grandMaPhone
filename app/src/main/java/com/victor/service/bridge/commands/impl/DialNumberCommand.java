@@ -16,6 +16,7 @@ import com.victor.service.bridge.commands.DeviceCommand;
 import com.victor.service.receiver.CallReceiver;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 public class DialNumberCommand extends Command {
 
@@ -33,8 +34,11 @@ public class DialNumberCommand extends Command {
             String numberCleared = dialNumber.getNumber().trim().
                     replace("(", "").replace(")", "").
                     replace(" ", "").replace("-", "");
-            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + numberCleared));
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + URLEncoder.encode(numberCleared,"UTF-8")));
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+            if (dialNumber.getOperatorId()!=null) {
+                intent.putExtra("simSlot", Integer.parseInt(dialNumber.getOperatorId()));
+            }
             if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 return null;
             }

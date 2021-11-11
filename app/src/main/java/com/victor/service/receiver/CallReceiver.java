@@ -33,7 +33,6 @@ public class CallReceiver extends AbstractPhoneCallReceiver {
 
     @Override
     protected void onEnded(Context ctx, String number) {
-        onPhoneStateChanged(ctx,number, PhoneCallState.FINISHED);
         IS_CALLING = false;
     }
 

@@ -2,9 +2,7 @@ package com.victor;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.ConsoleMessage;
@@ -12,18 +10,16 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.victor.model.PhoneCallStateInfo;
 import com.victor.service.bridge.DeviceListener;
 import com.victor.service.bridge.JsNativeBridge;
 import com.victor.service.bridge.commands.DeviceCommand;
-import com.victor.service.bridge.commands.impl.DialNumberCommand;
 import com.victor.service.kiosk.KioskService;
 import com.victor.service.provider.PermissionsProvider;
-import com.victor.service.provider.PhoneBookProvider;
 import com.victor.service.receiver.CallReceiver;
 
 // додаткі і сповіщення - сповіщення - сповіщення додатка - телефон - відключити
 // додаткі і сповіщення - телефон - показувати поверх ынших додатків - відключити
+
 
 public class MainActivity extends Activity {
 
@@ -59,7 +55,7 @@ public class MainActivity extends Activity {
         if (PermissionsProvider.hasAllPermissions(this)) {
             deviceListener.register(this);
         }
-        webView.loadUrl("file:///android_asset/index.html?and="+this.toString());
+        webView.loadUrl("file:///android_asset/index.html");
 
     }
 
@@ -119,7 +115,6 @@ public class MainActivity extends Activity {
     public static WebView getWebView() {
          return webView;
     }
-
 
     private static class MyWebViewClient extends WebViewClient {
         @Override

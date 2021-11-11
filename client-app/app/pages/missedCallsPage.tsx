@@ -5,6 +5,8 @@ import {Home} from "../components/home";
 import {Router} from "../router/router";
 import {formatDate} from "../utils/timeUtil";
 import {DialNumberStorage} from "./dialNumberPage";
+import {MobileOperatorInfoStorage} from "./homePage";
+import {initializeCall} from "./_fns";
 
 interface IMissedCall {
     nameFromPhoneBook?: string;
@@ -36,6 +38,7 @@ const navigateToDialNumber = ()=>{
     Router.navigateTo('dialNumber');
 }
 
+
 export const MissedCallsPage = ()=>{
     return (
         <>
@@ -56,7 +59,7 @@ export const MissedCallsPage = ()=>{
                     }
                     {
                         !MissedCallsStore.pending && MissedCallsStore.missedCalls.map(it=>
-                            <li  onclick={_=> NativeBridge.callHostCommand('dialNumber',{number:it.phone})}>
+                            <li  onclick={_=> initializeCall(it.phone)}>
                                 <div>{it.nameFromPhoneBook || it.phone}</div>
                                 <div>{formatDate(it.callDate)}</div>
                             </li>

@@ -3,6 +3,8 @@ import {Home} from "../components/home";
 import {StatelessPhone} from "../components/phone";
 import {Router} from "../router/router";
 import {NativeBridge} from "../nativeBridge";
+import {MobileOperatorInfoStorage} from "./homePage";
+import {initializeCall} from "./_fns";
 
 const SECRET_CODE_TO_EXIT = '*#0123#';
 
@@ -16,12 +18,12 @@ export const DialNumberStorage = {
     },
 }
 
-const dialNumber = async ()=>{
+export const dialNumber = async ()=>{
     if (!DialNumberStorage.number) return;
     if (DialNumberStorage.number===SECRET_CODE_TO_EXIT) {
         await NativeBridge.callHostCommand('quit');
     } else {
-        await NativeBridge.callHostCommand('dialNumber',{number:DialNumberStorage.number});
+        await initializeCall(DialNumberStorage.number);
     }
 }
 

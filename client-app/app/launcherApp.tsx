@@ -8,7 +8,7 @@ import {Battery, BatteryStorage} from "./components/battery";
 import {MissedCallsStorage} from "./components/phone";
 import {Clock, ClockStorage} from "./components/clock";
 import {NativeBridge} from "./nativeBridge";
-import {HomePage} from "./pages/homePage";
+import {HomePage, MobileOperatorInfoStorage} from "./pages/homePage";
 import {MissedCallsPage, MissedCallsStore} from "./pages/missedCallsPage";
 import {Router} from "./router/router";
 import {PhoneBookPage, PhoneBookStore} from "./pages/phoneBookPage";
@@ -17,6 +17,7 @@ import {SmsListPage, SmsListStore} from "./pages/SmsListPage";
 import {ActiveCallPage, ActiveCallStorage} from "./pages/activeCallPage";
 import {IGrantedPermissionInfo, SettingsPage, SettingsStorage} from "./pages/settingsPage";
 import {DialNumberPage, DialNumberStorage} from "./pages/dialNumberPage";
+import {ChooseSimCardPage} from "./pages/chooseSimCardPage";
 
 
 (window as any).__cb__ = (event:{eventId:string,payload:any})=>{
@@ -27,6 +28,11 @@ interface ICallStateChangedIfo {
     phoneCallState:'MISSED'|'FINISHED'|'STARTED'|'RINGING',
     phoneNumber: string,
     address: string
+}
+
+export interface ISimOperatorInfo {
+    operatorName:string;
+    operatorId:string;
 }
 
 NativeBridge.subscribeToEvent('onResume', async () => {
@@ -43,15 +49,9 @@ NativeBridge.subscribeToEvent('onCallStateChanged', ({phoneCallState,phoneNumber
             MissedCallsStorage.onChanged();
             break;
         }
-        case 'FINISHED':
-            Router.navigateTo('home');
-            break;
+        case 'FINISHED': // dont interest, the are for callApp
         case 'RINGING':
         case 'STARTED':
-            ActiveCallStorage.phoneNumber = phoneNumber;
-            ActiveCallStorage.address = address;
-            ActiveCallStorage.phoneCallState = phoneCallState;
-            Router.navigateTo('activeCall');
             break;
     }
 }, false);
@@ -77,15 +77,16 @@ export class App extends VEngineTsxComponent {
 
     constructor() {
         super(new HtmlTsxDOMRenderer());
-        BatteryStorage.onChanged        =
-        MissedCallsStore.onChanged      =
-        PhoneBookStore.onChanged        =
-        SmsStorage.onChanged            =
-        SmsListStore.onChanged          =
-        ActiveCallStorage.onChanged     =
-        MissedCallsStorage.onChanged    =
-        SettingsStorage.onChanged       =
-        DialNumberStorage.onChanged     =
+        BatteryStorage.onChanged                    =
+        MissedCallsStore.onChanged                  =
+        PhoneBookStore.onChanged                    =
+        MobileOperatorInfoStorage.onChanged         =
+        SmsStorage.onChanged                        =
+        SmsListStore.onChanged                      =
+        ActiveCallStorage.onChanged                 =
+        MissedCallsStorage.onChanged                =
+        SettingsStorage.onChanged                   =
+        DialNumberStorage.onChanged                 =
             ()=>this.triggerRendering();
 
         Router.onNavigated(()=>this.triggerRendering());
@@ -120,6 +121,7 @@ export class App extends VEngineTsxComponent {
                     {Router.getCurrentUrl()==='smsList' && <SmsListPage/>}
                     {Router.getCurrentUrl()==='activeCall' && <ActiveCallPage/>}
                     {Router.getCurrentUrl()==='dialNumber' && <DialNumberPage/>}
+                    {Router.getCurrentUrl()==='chooseSimCard' && <ChooseSimCardPage/>}
                 </div>
             </>
         );

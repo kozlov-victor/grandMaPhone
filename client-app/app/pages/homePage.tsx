@@ -6,6 +6,8 @@ import {Router} from "../router/router";
 import {MissedCallsStore} from "./missedCallsPage";
 import {PhoneBookStore} from "./phoneBookPage";
 import {SmsListStore} from "./SmsListPage";
+import {ISimOperatorInfo} from "../launcherApp";
+import {NativeBridge} from "../nativeBridge";
 
 const navigateToMissedCalls = ():void=>{
     Router.navigateTo('missedCalls');
@@ -34,11 +36,33 @@ const navigateToSmsList = ():void=>{
     catch(e=>{
         console.log(e);
     });
-}
+};
+
+export const MobileOperatorInfoStorage = {
+    operatorInfo: [{operatorName:'SIM card 1'},{operatorName:'SIM card 2'}] as ISimOperatorInfo[],
+    onChanged: () => {
+    },
+};
+
+(async ()=>{
+    const simInfo = await NativeBridge.callHostCommand('getSimOperatorInfo') as ISimOperatorInfo[];
+    MobileOperatorInfoStorage.operatorInfo = simInfo ?? [];
+    MobileOperatorInfoStorage.onChanged();
+})();
 
 export const HomePage = ()=>{
+    const operator1 = MobileOperatorInfoStorage.operatorInfo[0] ?? {operatorName: '...?...'};
+    const operator2 = MobileOperatorInfoStorage.operatorInfo[1];
     return (
         <>
+            <div>
+                <div style={{textAlign:'center',padding:'5px'}}>
+                    {operator1.operatorName}
+                    {
+                        operator2 && ', ' + operator2.operatorName
+                    }
+                </div>
+            </div>
             <div className="flex1" onclick={navigateToMissedCalls}>
                 <Phone/>
             </div>

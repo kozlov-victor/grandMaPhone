@@ -17,6 +17,7 @@ import com.victor.service.bridge.commands.impl.GetBatteryStatusCommand;
 import com.victor.service.bridge.commands.impl.GetContactListCommand;
 import com.victor.service.bridge.commands.impl.GetMissedCallsCommand;
 import com.victor.service.bridge.commands.impl.GetPermissionInfoCommand;
+import com.victor.service.bridge.commands.impl.GetSimOperatorInfoCommand;
 import com.victor.service.bridge.commands.impl.GetSmsListCommand;
 import com.victor.service.bridge.commands.impl.QuitCommand;
 import com.victor.service.bridge.commands.impl.RequestPermissionCommand;
@@ -66,6 +67,7 @@ public class DeviceListener {
         commandExecuter.registerCommand(new GetMissedCallsCommand());
         commandExecuter.registerCommand(new GetContactListCommand());
         commandExecuter.registerCommand(new GetSmsListCommand());
+        commandExecuter.registerCommand(new GetSimOperatorInfoCommand());
         commandExecuter.registerCommand(new DialNumberCommand());
         commandExecuter.registerCommand(new EndCallCommand());
         commandExecuter.registerCommand(new AcceptCallCommand());

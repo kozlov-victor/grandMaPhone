@@ -5,8 +5,6 @@ const fs = require('fs');
 const TerserPlugin = require('terser-webpack-plugin');
 const cliUI = require('./node_tools/cliUI');
 const ESLintPlugin = require('eslint-webpack-plugin');
-const {engineTransformer} = require("./node_tools/build/engineTransformer");
-
 
 class WebpackDonePlugin{
     apply(compiler){
@@ -36,11 +34,17 @@ class WebpackDonePlugin{
                     );
                     let indexHtml = fs.readFileSync('./index.html','utf-8');
                     const polyfills = fs.readFileSync('./build/polyfills.js','utf-8');
-                    const indexJs = fs.readFileSync('./build/index.js','utf-8');
+                    const launcherApp = fs.readFileSync('./build/launcherApp.js','utf-8');
+                    const callApp = fs.readFileSync('./build/callApp.js','utf-8');
 
-                    const code = `${polyfills}\n${indexJs}`;
-                    indexHtml = indexHtml.split('//PLACEHOLDER').join(code);
-                    fs.writeFileSync('../app/src/main/assets/index.html',indexHtml);
+                    fs.writeFileSync(
+                        '../app/src/main/assets/index.html',
+                        indexHtml.split('//PLACEHOLDER').join(`${polyfills}\n${launcherApp}`)
+                    );
+                    fs.writeFileSync(
+                        '../../grandMaCall/app/src/main/assets/index.html',
+                        indexHtml.split('//PLACEHOLDER').join(`${polyfills}\n${callApp}`)
+                    );
 
                 }
 
@@ -70,7 +74,8 @@ module.exports = async (env={})=>{
         //chunkFilename: "[name].chunk.js",
     };
 
-    entry['index'] = [`./app/index.tsx`];
+    entry['launcherApp'] = [`./app/launcherApp.tsx`];
+    entry['callApp'] = [`./app/callApp.tsx`];
     entry['polyfills'] = [`./app/polyfills-separate.ts`];
 
 
