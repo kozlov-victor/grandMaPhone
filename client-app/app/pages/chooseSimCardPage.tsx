@@ -17,7 +17,7 @@ const SimCard = (props:{index:number}) => {
     );
 }
 
-const dialNumber = async (operatorId:string)=>{
+const dialNumber = async (operatorId:number)=>{
     await NativeBridge.callHostCommand('dialNumber',{number:DialNumberStorage.number,operatorId});
 }
 

@@ -32,7 +32,7 @@ interface ICallStateChangedIfo {
 
 export interface ISimOperatorInfo {
     operatorName:string;
-    operatorId:string;
+    operatorId:number;
 }
 
 NativeBridge.subscribeToEvent('onResume', async () => {

@@ -3,7 +3,6 @@ import {Home} from "../components/home";
 import {StatelessPhone} from "../components/phone";
 import {Router} from "../router/router";
 import {NativeBridge} from "../nativeBridge";
-import {MobileOperatorInfoStorage} from "./homePage";
 import {initializeCall} from "./_fns";
 
 const SECRET_CODE_TO_EXIT = '*#0123#';
