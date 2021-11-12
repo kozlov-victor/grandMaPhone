@@ -36,7 +36,7 @@ export const ChooseSimCardPage = () => {
                                 <div style={{padding:'10px'}}>
                                     <SimCard index={it}/>
                                 </div>
-                                <h3 className="flex1" style={{textAlign:'center',padding:'5px'}}>
+                                <h3 className="flex1" style={{textAlign:'left',padding:'5px'}}>
                                     {MobileOperatorInfoStorage.operatorInfo[it]?.operatorName ?? '?'}
                                 </h3>
                             </div>

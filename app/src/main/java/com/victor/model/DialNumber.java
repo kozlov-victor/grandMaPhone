@@ -2,7 +2,7 @@ package com.victor.model;
 
 public class DialNumber {
     private String number;
-    private String operatorId;
+    private Integer operatorId;
 
     public String getNumber() {
         return number;
@@ -12,11 +12,19 @@ public class DialNumber {
         this.number = number;
     }
 
-    public String getOperatorId() {
+    public Integer getOperatorId() {
         return operatorId;
     }
 
-    public void setOperatorId(String operatorId) {
+    public void setOperatorId(Integer operatorId) {
         this.operatorId = operatorId;
+    }
+
+    @Override
+    public String toString() {
+        return "DialNumber{" +
+                "number='" + number + '\'' +
+                ", operatorId=" + operatorId +
+                '}';
     }
 }

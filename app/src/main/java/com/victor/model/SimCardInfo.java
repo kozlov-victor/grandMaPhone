@@ -2,9 +2,9 @@ package com.victor.model;
 
 public class SimCardInfo {
     private String operatorName;
-    private String operatorId;
+    private Integer operatorId;
 
-    public SimCardInfo(String operatorName, String operatorId) {
+    public SimCardInfo(String operatorName, Integer operatorId) {
         this.operatorName = operatorName;
         this.operatorId = operatorId;
     }
@@ -17,11 +17,11 @@ public class SimCardInfo {
         this.operatorName = operatorName;
     }
 
-    public String getOperatorId() {
+    public Integer getOperatorId() {
         return operatorId;
     }
 
-    public void setOperatorId(String operatorId) {
+    public void setOperatorId(Integer operatorId) {
         this.operatorId = operatorId;
     }
 }

@@ -37,8 +37,8 @@ public class SimCardProvider {
             //String id1 = simInfo1.getIccId();
             //String id2 = simInfo2.getIccId();
 
-            result.add(new SimCardInfo(sim1,"0"));
-            result.add(new SimCardInfo(sim2,"1"));
+            result.add(new SimCardInfo(sim1,simInfo1.getSimSlotIndex()));
+            result.add(new SimCardInfo(sim2,simInfo2.getSimSlotIndex()));
         } else {
             //if there is 1 sim in dual sim mobile
             TelephonyManager tManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
