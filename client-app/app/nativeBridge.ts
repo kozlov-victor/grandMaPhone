@@ -11,7 +11,7 @@ export namespace NativeBridge {
 
 
     export const onEventReceivedFromHost = ({eventId,payload} : {eventId:string,payload:string}):void=> {
-        console.log('onEventReceivedFromHost',eventId,JSON.stringify(payload));
+        console.log('onEventReceivedFromHost, eventId: ' + eventId +', payload: ' + JSON.stringify(payload));
         if (callBacks[eventId]) {
             callBacks[eventId].cb(payload);
             if (callBacks[eventId].once) delete callBacks[eventId];

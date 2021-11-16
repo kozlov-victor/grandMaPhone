@@ -2,8 +2,6 @@ import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactor
 import {NativeBridge} from "../nativeBridge";
 import {Home} from "../components/home";
 import {Router} from "../router/router";
-import {MobileOperatorInfoStorage} from "./homePage";
-import {DialNumberStorage} from "./dialNumberPage";
 import {initializeCall} from "./_fns";
 
 interface IPhoneBookRecord {
@@ -46,7 +44,7 @@ export const PhoneBookPage = ()=>{
                     {
                         !PhoneBookStore.pending && PhoneBookStore.records.length === 0 &&
                         <li style={{background: 'none'}}>
-                            Нет записей
+                            Нет записей или данные не готовы
                         </li>
                     }
                     {

@@ -39,14 +39,17 @@ const navigateToSmsList = ():void=>{
 };
 
 export const MobileOperatorInfoStorage = {
-    operatorInfo: [{operatorName:'SIM card 1'},{operatorName:'SIM card 2'}] as ISimOperatorInfo[],
+    pending: false,
+    operatorInfo: [] as ISimOperatorInfo[],
     onChanged: () => {
     },
 };
 
 (async ()=>{
+    MobileOperatorInfoStorage.pending = true;
     const simInfo = await NativeBridge.callHostCommand('getSimOperatorInfo') as ISimOperatorInfo[];
     MobileOperatorInfoStorage.operatorInfo = simInfo ?? [];
+    MobileOperatorInfoStorage.pending = false;
     MobileOperatorInfoStorage.onChanged();
 })();
 
@@ -57,21 +60,35 @@ export const HomePage = ()=>{
         <>
             <div>
                 <div style={{textAlign:'center',padding:'5px'}}>
-                    {operator1.operatorName}
                     {
-                        operator2 && ', ' + operator2.operatorName
+                        !MobileOperatorInfoStorage.pending &&
+                        <>
+                            {operator1.operatorName}
+                            {
+                                operator2 && ', ' + operator2.operatorName
+                            }
+                        </>
+                    }
+                    {
+                        MobileOperatorInfoStorage.pending &&
+                        'Получение инфромации о сети...'
                     }
                 </div>
             </div>
-            <div className="flex1" onclick={navigateToMissedCalls}>
-                <Phone/>
-            </div>
-            <div className="flex1" onclick={navigateToPhoneBook}>
-                <PhoneBook/>
-            </div>
-            <div className="flex1" onclick={navigateToSmsList}>
-                <Sms/>
-            </div>
+            {
+                !MobileOperatorInfoStorage.pending &&
+                <>
+                    <div className="flex1" onclick={navigateToMissedCalls}>
+                        <Phone/>
+                    </div>
+                    <div className="flex1" onclick={navigateToPhoneBook}>
+                        <PhoneBook/>
+                    </div>
+                    <div className="flex1" onclick={navigateToSmsList}>
+                        <Sms/>
+                    </div>
+                </>
+            }
         </>
     )
 }

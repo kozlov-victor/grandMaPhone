@@ -54,7 +54,7 @@ public class PhoneBookProvider {
             if(!cursor.isClosed()) {
                 cursor.close();
             }
-            nameByNumberCache.put(phoneNumber,contactName);
+            if (contactName!=null && !contactName.equals("")) nameByNumberCache.put(phoneNumber,contactName);
             return contactName;
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +83,9 @@ public class PhoneBookProvider {
                             null,
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                             new String[]{id}, null);
-                    if (pCur==null) break;
+                    if (pCur==null) {
+                        break;
+                    }
                     while (pCur.moveToNext()) {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
