@@ -26,18 +26,15 @@ public class CallListProvider {
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             return result;
         }
-        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE +" DESC LIMIT " + MAX_RECORDS);
+        String where = CallLog.Calls.TYPE+"="+CallLog.Calls.MISSED_TYPE;
+        Cursor cursor = cr.query(CallLog.Calls.CONTENT_URI, null, where, null, CallLog.Calls.DATE +" DESC LIMIT " + MAX_RECORDS);
         if (cursor==null) return result;
 
         int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
-        int type = cursor.getColumnIndex(CallLog.Calls.TYPE);
         int date = cursor.getColumnIndex(CallLog.Calls.DATE);
         //int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
 
         while (cursor.moveToNext()) {
-            String callType = cursor.getString(type); // call type
-            int dircode = Integer.parseInt(callType);
-            if (dircode!=CallLog.Calls.MISSED_TYPE) continue;
 
             String phNumber = cursor.getString(number); // mobile number
             String nameFromPhoneBook = PhoneBookProvider.getInstance().getContactNameByPhoneNumber(activity,phNumber);

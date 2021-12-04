@@ -13,6 +13,7 @@ const navigateToHome = ()=> {
 
 export const DialNumberStorage = {
     number: '',
+    name: '' as string|undefined,
     onChanged: () => {
     },
 }

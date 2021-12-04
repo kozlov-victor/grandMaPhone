@@ -9,9 +9,7 @@ import androidx.annotation.Nullable;
 import com.victor.MainActivity;
 import com.victor.service.bridge.commands.CommandExecuter;
 import com.victor.service.bridge.commands.DeviceCommand;
-import com.victor.service.bridge.commands.impl.AcceptCallCommand;
 import com.victor.service.bridge.commands.impl.DialNumberCommand;
-import com.victor.service.bridge.commands.impl.EndCallCommand;
 import com.victor.service.bridge.commands.impl.GetBatteryLevelCommand;
 import com.victor.service.bridge.commands.impl.GetBatteryStatusCommand;
 import com.victor.service.bridge.commands.impl.GetContactListCommand;
@@ -69,8 +67,6 @@ public class DeviceListener {
         commandExecuter.registerCommand(new GetSmsListCommand());
         commandExecuter.registerCommand(new GetSimOperatorInfoCommand());
         commandExecuter.registerCommand(new DialNumberCommand());
-        commandExecuter.registerCommand(new EndCallCommand());
-        commandExecuter.registerCommand(new AcceptCallCommand());
         commandExecuter.registerCommand(new GetPermissionInfoCommand());
         commandExecuter.registerCommand(new RequestPermissionCommand());
         commandExecuter.registerCommand(new QuitCommand());

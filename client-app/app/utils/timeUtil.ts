@@ -14,3 +14,9 @@ export const formatDate = (dt:number):string=>{
     const z = leadZero;
     return `${z(day)}.${z(month)}.${year} ${z(hours)}:${z(min)}`;
 }
+
+export const waitFor = (time:number)=>{
+    return new Promise(resolve => {
+        setTimeout(resolve, time);
+    });
+}

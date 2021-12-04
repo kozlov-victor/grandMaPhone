@@ -13,7 +13,7 @@ import {MissedCallsPage, MissedCallsStore} from "./pages/missedCallsPage";
 import {Router} from "./router/router";
 import {PhoneBookPage, PhoneBookStore} from "./pages/phoneBookPage";
 import {SmsStorage} from "./components/sms";
-import {SmsListPage, SmsListStore} from "./pages/SmsListPage";
+import {SmsListPage, SmsListStore} from "./pages/smsListPage";
 import {ActiveCallPage, ActiveCallStorage} from "./pages/activeCallPage";
 import {IGrantedPermissionInfo, SettingsPage, SettingsStorage} from "./pages/settingsPage";
 import {DialNumberPage, DialNumberStorage} from "./pages/dialNumberPage";
@@ -49,9 +49,12 @@ NativeBridge.subscribeToEvent('onCallStateChanged', ({phoneCallState,phoneNumber
             MissedCallsStorage.onChanged();
             break;
         }
-        case 'FINISHED': // dont interest, the are for callApp
+        // dont interest, they are for callApp
         case 'RINGING':
         case 'STARTED':
+            break;
+        case 'FINISHED':
+            Router.navigateTo('home');
             break;
     }
 }, false);

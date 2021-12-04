@@ -59,9 +59,9 @@ export const MissedCallsPage = ()=>{
                     }
                     {
                         !MissedCallsStore.pending && MissedCallsStore.missedCalls.map(it=>
-                            <li  onclick={_=> initializeCall(it.phone)}>
-                                <div>{it.nameFromPhoneBook || it.phone}</div>
-                                <div>{formatDate(it.callDate)}</div>
+                            <li  onclick={_=> initializeCall(it.phone,it.nameFromPhoneBook)}>
+                                <div className="list_item_title">{it.nameFromPhoneBook || it.phone}</div>
+                                <div className="list_item_text">{formatDate(it.callDate)}</div>
                             </li>
                         )
                     }

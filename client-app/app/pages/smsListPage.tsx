@@ -54,8 +54,8 @@ export const SmsListPage = ()=>{
                     {
                         !SmsListStore.pending && SmsListStore.records.map(it=>
                             <li>
-                                <div>{formatDate(it.time)} {it.address}</div>
-                                <div>{it.msg}</div>
+                                <div className="list_item_title">{formatDate(it.time)} {it.address}</div>
+                                <div className="list_item_text">{it.msg}</div>
                             </li>
                         )
                     }

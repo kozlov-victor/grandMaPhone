@@ -29,6 +29,10 @@ export const ChooseSimCardPage = () => {
     return (
         <>
             <div className="flex1">
+                <h1 style={{textAlign: 'center'}}>
+                    {DialNumberStorage.name && <div>{DialNumberStorage.name}</div>}
+                    <div>{DialNumberStorage.number}</div>
+                </h1>
                 {
                     [0,1].map(it=>
                         <div onclick={()=>dialNumber(MobileOperatorInfoStorage.operatorInfo[it].operatorId)}>

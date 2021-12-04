@@ -144,6 +144,7 @@ declare namespace JSX {
         rect:any;
         circle:any;
         path:any;
+        line:any;
 
     }
 }

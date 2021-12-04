@@ -6,6 +6,8 @@ import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactor
 import {NativeBridge} from "./nativeBridge";
 import {ActiveCallPage, ActiveCallStorage} from "./pages/activeCallPage";
 import {Router} from "./router/router";
+import {waitFor} from "./utils/timeUtil";
+import {forceLoudModeOn} from "./pages/_fns";
 
 
 (window as any).__cb__ = (event:{eventId:string,payload:any})=>{
@@ -54,6 +56,10 @@ export class App extends VEngineTsxComponent {
         ActiveCallStorage.onChanged = ()=>this.triggerRendering();
         Router.onNavigated(()=>this.triggerRendering());
         Router.navigateTo('activeCall');
+        (async ()=>{
+            await waitFor(1000);
+            await forceLoudModeOn();
+        })();
     }
 
     public render(): VirtualNode {

@@ -5,7 +5,7 @@ import {VEngineTsxFactory} from "@engine/renderable/tsx/genetic/vEngineTsxFactor
 import {Router} from "../router/router";
 import {MissedCallsStore} from "./missedCallsPage";
 import {PhoneBookStore} from "./phoneBookPage";
-import {SmsListStore} from "./SmsListPage";
+import {SmsListStore} from "./smsListPage";
 import {ISimOperatorInfo} from "../launcherApp";
 import {NativeBridge} from "../nativeBridge";
 

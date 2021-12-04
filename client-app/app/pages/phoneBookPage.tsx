@@ -49,9 +49,9 @@ export const PhoneBookPage = ()=>{
                     }
                     {
                         !PhoneBookStore.pending && PhoneBookStore.records.map(it=>
-                            <li onclick={_=> initializeCall(it.phoneNumber)}>
-                                <div>{it.name}</div>
-                                <div>{it.phoneNumber}</div>
+                            <li onclick={_=> initializeCall(it.phoneNumber,it.name)}>
+                                <div className="list_item_title">{it.name}</div>
+                                <div className="list_item_text">{it.phoneNumber}</div>
                             </li>
                         )
                     }
